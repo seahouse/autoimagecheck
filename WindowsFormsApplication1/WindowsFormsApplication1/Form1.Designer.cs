@@ -29,9 +29,9 @@
     private void InitializeComponent()
     {
       this.components = new System.ComponentModel.Container();
-      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-      System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-      System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+      System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+      System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+      System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
       this.chart = new System.Windows.Forms.DataVisualization.Charting.Chart();
       this.timer = new System.Windows.Forms.Timer(this.components);
       this.btnLoadTxtData = new System.Windows.Forms.Button();
@@ -109,16 +109,16 @@
       // 
       // chart
       // 
-      chartArea5.Name = "ChartArea1";
-      this.chart.ChartAreas.Add(chartArea5);
-      legend5.Name = "Legend1";
-      this.chart.Legends.Add(legend5);
+      chartArea1.Name = "ChartArea1";
+      this.chart.ChartAreas.Add(chartArea1);
+      legend1.Name = "Legend1";
+      this.chart.Legends.Add(legend1);
       this.chart.Location = new System.Drawing.Point(32, 28);
       this.chart.Name = "chart";
-      series5.ChartArea = "ChartArea1";
-      series5.Legend = "Legend1";
-      series5.Name = "Series1";
-      this.chart.Series.Add(series5);
+      series1.ChartArea = "ChartArea1";
+      series1.Legend = "Legend1";
+      series1.Name = "Series1";
+      this.chart.Series.Add(series1);
       this.chart.Size = new System.Drawing.Size(550, 500);
       this.chart.TabIndex = 0;
       this.chart.Text = "chart1";
@@ -455,7 +455,8 @@
       this._txtboxProfileFilePath.Name = "_txtboxProfileFilePath";
       this._txtboxProfileFilePath.Size = new System.Drawing.Size(189, 20);
       this._txtboxProfileFilePath.TabIndex = 1;
-      this._txtboxProfileFilePath.Text = "C:\\liangyi\\WindowsFormsApplication1\\WindowsFormsApplication1\\bin\\Debug\\rf.txt";
+      this._txtboxProfileFilePath.Text = "C:\\liangyi\\autoimagecheck\\WindowsFormsApplication1\\WindowsFormsApplication1\\bin\\D" +
+    "ebug\\111.txt";
       // 
       // _btnSaveMeasureData
       // 

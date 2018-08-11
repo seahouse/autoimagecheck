@@ -780,27 +780,27 @@ namespace WindowsFormsApplication1
               {
                 AddLog(@"###Saved!!");
 
-                StreamReader sr = new StreamReader("rf.txt", Encoding.Default);
-                String line;
-                int i = 0;
-                List<int> listX = new List<int>();
-                List<double> listY = new List<double>();
-                while ((line = sr.ReadLine()) != null)
-                {
+                //StreamReader sr = new StreamReader("rf.txt", Encoding.Default);
+                //String line;
+                //int i = 0;
+                //List<int> listX = new List<int>();
+                //List<double> listY = new List<double>();
+                //while ((line = sr.ReadLine()) != null)
+                //{
 
-                  String[] aa = line.Split('\t');
-                  if (aa.Length > 1)
-                  {
-                    listX.Add(i);
-                    double zv = double.Parse( aa.ElementAt(1));
-                    zv = zv * 0.0001;
-                    listY.Add(zv);
-                  }
-                  i++;
-                  //Console.WriteLine(line.ToString());
-                }
-                chart.Series[0].Points.DataBindXY(listX, listY);
-                chart.Series[0].Points.DataBindY(listY);
+                //  String[] aa = line.Split('\t');
+                //  if (aa.Length > 1)
+                //  {
+                //    listX.Add(i);
+                //    double zv = double.Parse( aa.ElementAt(1));
+                //    zv = zv * 0.0001;
+                //    listY.Add(zv);
+                //  }
+                //  i++;
+                //  //Console.WriteLine(line.ToString());
+                //}
+                //chart.Series[0].Points.DataBindXY(listX, listY);
+                //chart.Series[0].Points.DataBindY(listY);
               }
             }
           }
@@ -1453,14 +1453,14 @@ namespace WindowsFormsApplication1
         i++;
       }
 
-      listY_B_Left = listY_B_Left.Take(200).ToList<double>();
+      listY_B_Left = listY_B_Left.Take(300).ToList<double>();
       listY_B_Left.Reverse();
-      listX_B_Mid = listX_B_Mid.Take(200).ToList<double>();
+      listX_B_Mid = listX_B_Mid.Take(300).ToList<double>();
       listX_B_Mid.Reverse();
       listY_A_Right.Reverse();
-      listY_A_Right = listY_A_Right.Take(200).ToList<double>();
+      listY_A_Right = listY_A_Right.Take(300).ToList<double>();
       listX_A_Mid.Reverse();
-      listX_A_Mid = listX_A_Mid.Take(200).ToList<double>();
+      listX_A_Mid = listX_A_Mid.Take(300).ToList<double>();
 
       double maxleft = 0.0;
       if (listY_A_Right.Count > 0)
