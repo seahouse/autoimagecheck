@@ -251,8 +251,10 @@ namespace WindowsFormsApplication1
         //X轴、Y轴标题
         chart.ChartAreas[0].AxisX.Title = "环号";
         chart.ChartAreas[0].AxisY.Title = "直径";
-        chart.ChartAreas[0].AxisX.Minimum = -3.0;
-        chart.ChartAreas[0].AxisX.Maximum = 3.0;
+        chart.ChartAreas[0].AxisX.Minimum = -2.0;
+        chart.ChartAreas[0].AxisX.Maximum = 2.0;
+        chart.ChartAreas[0].AxisY.Minimum = -5.0;
+        chart.ChartAreas[0].AxisY.Maximum = 0.2;
         ////设置Y轴范围  可以根据实际情况重新修改
         //double max = listY[0];
         //double min = listY[0];
@@ -1127,13 +1129,17 @@ namespace WindowsFormsApplication1
 
     private void btnLoadTxtData4_Click(object sender, EventArgs e)
     {
-      StreamReader sr = new StreamReader("t2.txt", Encoding.Default);
+      StreamReader sr = new StreamReader("t1.txt", Encoding.Default);
       String line;
       int i = 0;
-      List<double> listX = new List<double>();
-      List<double> listX2 = new List<double>();
-      List<double> listY = new List<double>();
-      List<double> listY2 = new List<double>();
+      List<double> listX_B_Mid = new List<double>();
+      List<double> listX_B_Left = new List<double>();
+      List<double> listX_A_Mid = new List<double>();
+      List<double> listX_A_Right = new List<double>();
+      List<double> listY_B_Left = new List<double>();
+      List<double> listY_A_Right = new List<double>();
+      double last_A = 0.0;
+      double last_B = 0.0;
       while ((line = sr.ReadLine()) != null)
       {
 
@@ -1141,34 +1147,122 @@ namespace WindowsFormsApplication1
         if (aa.Length > 1)
         {
           double xbase = double.Parse(aa.ElementAt(0)) * 0.00001;
-          double xv = (xbase - 4.0) / Math.Sqrt(2.0) - 4 / Math.Sqrt(2.0);
-          double xv2 = (xbase + 4.0) / Math.Sqrt(2.0) + 4 / Math.Sqrt(2.0);
-          listX.Add(xv);
-          listX2.Add(xv2);
-          double zbase = double.Parse(aa.ElementAt(2));
-          if (zbase < -2147480000)
-            zbase = -4.5;
+          double xv = xbase;
+          double zbase_a = double.Parse(aa.ElementAt(1));
+          if (zbase_a < -2147480000)
+            zbase_a = -4.5;
           else
-            zbase = zbase * 0.00001;
-          double zv = zbase;  // / Math.Sqrt(2.0);
-          double zbase2 = double.Parse(aa.ElementAt(1));
-          if (zbase2 < -2147480000)
-            zbase2 = -4.5;
+          {
+            zbase_a = zbase_a * 0.00001;
+            double zv2 = 4.0 - zbase_a;  // / Math.Sqrt(2.0);
+            zv2 = (xv + 4.5) / Math.Sqrt(2.0) - zv2 / Math.Sqrt(2.0) + 2.0;
+            listY_A_Right.Add(zv2);
+            if (listX_A_Mid.Count > 0)
+            {
+              if (4.0 - zbase_a < 4.0 - last_A)
+                listX_A_Mid.Add(Math.Sqrt(2.0) / 2 * Math.Abs((0.01 - Math.Abs(last_A - zbase_a))));
+              else
+                listX_A_Mid.Add(Math.Sqrt(2.0) / 2 * Math.Abs((0.01 + Math.Abs(last_A - zbase_a))));
+              last_A = zbase_a;
+            }
+            else
+            {
+              listX_A_Mid.Add(zbase_a);
+              last_A = zbase_a;
+            }
+          }
+          double zbase_b = double.Parse(aa.ElementAt(2));
+          if (zbase_b < -2147480000)
+            zbase_b = -4.5;
           else
-            zbase2 = zbase2 * 0.00001;
-          double zv2 = zbase2;  // / Math.Sqrt(2.0);
-          listY.Add(zv);
-          listY2.Add(zv2);
+          {
+            zbase_b = zbase_b * 0.00001;
+            double zv2 = 4.0 - zbase_b;
+            zv2 = (4.5 - xv) / Math.Sqrt(2.0) - zv2 / Math.Sqrt(2.0) + 2.0;
+            listY_B_Left.Add(zv2);
+            if (listX_B_Mid.Count > 0)
+            {
+              if (4.0 - zbase_b > 4.0 - last_B)
+                listX_B_Mid.Add(Math.Sqrt(2.0) / 2 * Math.Abs((0.01 - Math.Abs(last_B - zbase_b))));
+              else
+                listX_B_Mid.Add(Math.Sqrt(2.0) / 2 * Math.Abs((0.01 + Math.Abs(last_B - zbase_b))));
+              last_B = zbase_b;
+            }
+            else
+            {
+              listX_B_Mid.Add(zbase_b);
+              last_B = zbase_b;
+            }
+          }
         }
         i++;
-        //Console.WriteLine(line.ToString());
       }
-      foreach (double xv in listX2)
-        listX.Add(xv);
-      foreach (double zv in listY2)
-        listY.Add(zv);
-      chart.Series[0].Points.DataBindXY(listX, listY);
-      //chart.Series[0].Points.DataBindY(listY);
+
+      listY_B_Left = listY_B_Left.Take(300).ToList<double>();
+      listY_B_Left.Reverse();
+      listX_B_Mid = listX_B_Mid.Take(300).ToList<double>();
+      listX_B_Mid.Reverse();
+      listY_A_Right.Reverse();
+      listY_A_Right = listY_A_Right.Take(300).ToList<double>();
+      listX_A_Mid.Reverse();
+      listX_A_Mid = listX_A_Mid.Take(300).ToList<double>();
+
+      double maxleft = 0.0;
+      if (listY_A_Right.Count > 0)
+        maxleft = listY_A_Right.Max();
+      double maxright = 0.0;
+      if (listY_B_Left.Count > 0)
+        maxright = listY_B_Left.Max();
+      if (maxleft != 0.0 && maxright != 0.0)
+      {
+        // set max value to 0
+        for (int ii = 0; ii < listY_B_Left.Count; ii++)
+          listY_B_Left[ii] = listY_B_Left[ii] - maxright;
+        for (int ii = 0; ii < listY_A_Right.Count; ii++)
+          listY_A_Right[ii] = listY_A_Right[ii] - maxleft;
+
+        int pos = listY_B_Left.LastIndexOf(0.0);
+        listY_B_Left = listY_B_Left.Take(pos).ToList<double>();
+        listX_B_Mid = listX_B_Mid.Take(pos).ToList<double>();
+        pos = listY_A_Right.IndexOf(0.0);
+        listY_A_Right = listY_A_Right.GetRange(pos, listY_A_Right.Count - pos);
+        listX_A_Mid = listX_A_Mid.GetRange(pos, listX_A_Mid.Count - pos);
+
+        //double cj = maxleft - maxright;
+        //for (int ii = 0; ii < listY_B_Left.Count; ii++)
+        //  listY_B_Left[ii] = listY_B_Left[ii] + cj;
+
+        //int pos = listY_B_Left.LastIndexOf(maxleft);
+        //listY_B_Left = listY_B_Left.Take(pos).ToList<double>();
+        //listX_B_Mid = listX_B_Mid.Take(pos).ToList<double>();
+        //pos = listY_A_Right.IndexOf(maxleft);
+        //listY_A_Right = listY_A_Right.GetRange(pos, listY_A_Right.Count - pos);
+        //listX_A_Mid = listX_A_Mid.GetRange(pos, listX_A_Mid.Count - pos);
+      }
+
+
+
+      foreach (double zv in listY_A_Right)
+        listY_B_Left.Add(zv);
+
+      listX_A_Right.Clear();
+      listX_A_Right.Add(0.0);
+      for (int ii = 0; ii < listX_A_Mid.Count - 1; ii++)
+      {
+        listX_A_Right.Add(listX_A_Right.Last() + listX_A_Mid[ii]);
+      }
+      listX_B_Left.Clear();
+      listX_B_Left.Add(0.0);
+      for (int ii = listX_B_Mid.Count - 1; ii > 0; ii--)
+      {
+        listX_B_Left.Insert(0, listX_B_Left.First() - listX_B_Mid[ii]);
+      }
+      foreach (double xv in listX_A_Right)
+        listX_B_Left.Add(xv);
+
+      chart.Series[1].Points.DataBindXY(listX_B_Left, listY_B_Left);
+      chart.Series[1].Name = "t1";
+      //chart.Series[0].Points.DataBindY(listY_A_Right);
     }
 
     private void _timerHighSpeedReceive_Tick(object sender, EventArgs e)
@@ -1334,28 +1428,35 @@ namespace WindowsFormsApplication1
           maxright = listY_B_Left.Max();
         if (maxleft != 0.0 && maxright != 0.0)
         {
-          double cj = maxleft - maxright;
+          // set max value to 0
           for (int ii = 0; ii < listY_B_Left.Count; ii++)
-            listY_B_Left[ii] = listY_B_Left[ii] + cj;
+            listY_B_Left[ii] = listY_B_Left[ii] - maxright;
+          for (int ii = 0; ii < listY_A_Right.Count; ii++)
+            listY_A_Right[ii] = listY_A_Right[ii] - maxleft;
 
-          int pos = listY_B_Left.LastIndexOf(maxleft);
+          int pos = listY_B_Left.LastIndexOf(0.0);
           listY_B_Left = listY_B_Left.Take(pos).ToList<double>();
           listX_B_Mid = listX_B_Mid.Take(pos).ToList<double>();
-          pos = listY_A_Right.IndexOf(maxleft);
+          pos = listY_A_Right.IndexOf(0.0);
           listY_A_Right = listY_A_Right.GetRange(pos, listY_A_Right.Count - pos);
           listX_A_Mid = listX_A_Mid.GetRange(pos, listX_A_Mid.Count - pos);
+
+
+          //double cj = maxleft - maxright;
+          //for (int ii = 0; ii < listY_B_Left.Count; ii++)
+          //  listY_B_Left[ii] = listY_B_Left[ii] + cj;
+
+          //int pos = listY_B_Left.LastIndexOf(maxleft);
+          //listY_B_Left = listY_B_Left.Take(pos).ToList<double>();
+          //listX_B_Mid = listX_B_Mid.Take(pos).ToList<double>();
+          //pos = listY_A_Right.IndexOf(maxleft);
+          //listY_A_Right = listY_A_Right.GetRange(pos, listY_A_Right.Count - pos);
+          //listX_A_Mid = listX_A_Mid.GetRange(pos, listX_A_Mid.Count - pos);
         }
 
         foreach (double zv in listY_A_Right)
           listY_B_Left.Add(zv);
 
-        //listX.Clear();
-        //double j = -3.0 / Math.Sqrt(2.0);
-        //for (int i = 0; i < listY_B_Left.Count; i++)
-        //{
-        //  listX.Add(j);
-        //  j += 0.01 / Math.Sqrt(2.0);
-        //}
 
         listX_A_Right.Clear();
         if (listX_A_Mid.Count>0)
@@ -1470,16 +1571,29 @@ namespace WindowsFormsApplication1
         maxright = listY_B_Left.Max();
       if (maxleft != 0.0 && maxright != 0.0)
       {
-        double cj = maxleft - maxright;
+        // set max value to 0
         for (int ii = 0; ii < listY_B_Left.Count; ii++)
-          listY_B_Left[ii] = listY_B_Left[ii] + cj;
+          listY_B_Left[ii] = listY_B_Left[ii] - maxright;
+        for (int ii = 0; ii < listY_A_Right.Count; ii++)
+          listY_A_Right[ii] = listY_A_Right[ii] - maxleft;
 
-        int pos = listY_B_Left.LastIndexOf(maxleft);
+        int pos = listY_B_Left.LastIndexOf(0.0);
         listY_B_Left = listY_B_Left.Take(pos).ToList<double>();
         listX_B_Mid = listX_B_Mid.Take(pos).ToList<double>();
-        pos = listY_A_Right.IndexOf(maxleft);
+        pos = listY_A_Right.IndexOf(0.0);
         listY_A_Right = listY_A_Right.GetRange(pos, listY_A_Right.Count - pos);
         listX_A_Mid = listX_A_Mid.GetRange(pos, listX_A_Mid.Count - pos);
+
+        //double cj = maxleft - maxright;
+        //for (int ii = 0; ii < listY_B_Left.Count; ii++)
+        //  listY_B_Left[ii] = listY_B_Left[ii] + cj;
+
+        //int pos = listY_B_Left.LastIndexOf(maxleft);
+        //listY_B_Left = listY_B_Left.Take(pos).ToList<double>();
+        //listX_B_Mid = listX_B_Mid.Take(pos).ToList<double>();
+        //pos = listY_A_Right.IndexOf(maxleft);
+        //listY_A_Right = listY_A_Right.GetRange(pos, listY_A_Right.Count - pos);
+        //listX_A_Mid = listX_A_Mid.GetRange(pos, listX_A_Mid.Count - pos);
       }
 
 
@@ -1502,7 +1616,8 @@ namespace WindowsFormsApplication1
       foreach (double xv in listX_A_Right)
         listX_B_Left.Add(xv);
 
-      chart.Series[0].Points.DataBindXY(listX_B_Left, listY_B_Left);
+      chart.Series[1].Points.DataBindXY(listX_B_Left, listY_B_Left);
+      chart.Series[1].Name = "t2";
       //chart.Series[0].Points.DataBindY(listY_A_Right);
     }
 
@@ -1571,7 +1686,16 @@ namespace WindowsFormsApplication1
       //  listX_B_Left.Add(xv);
 
       chart.Series[0].Points.DataBindXY(listX_B_Left, listY_B_Left);
-      //chart.Series[0].Points.DataBindY(listY_A_Right);
+      chart.Series[0].Name = "B301GF_CR10-LE";
+
+      List<double> listY_Offset_Big = new List<double>();
+      List<double> listY_Offset_Small = new List<double>();
+      for (i = 0; i < listY_B_Left.Count; i++)
+        listY_Offset_Big.Add(listY_B_Left[i] + 0.5);
+      for (i = 0; i < listY_B_Left.Count; i++)
+        listY_Offset_Small.Add(listY_B_Left[i] - 0.1);
+      chart.Series[2].Points.DataBindXY(listX_B_Left, listY_Offset_Big);
+      chart.Series[2].Name = "B301GF_CR10-LE_BIG";
     }
 
     private void button3_Click(object sender, EventArgs e)
@@ -1617,9 +1741,8 @@ namespace WindowsFormsApplication1
 
 
 
-
-
       chart.Series[0].Points.DataBindXY(listX_B_Left, listY_B_Left);
+      chart.Series[0].Name = "B301GF_CR10-TE";
       //chart.Series[0].Points.DataBindY(listY_A_Right);
     }
   }
