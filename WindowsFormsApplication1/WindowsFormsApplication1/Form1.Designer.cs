@@ -126,10 +126,11 @@
       series2.Legend = "Legend1";
       series2.Name = "Series2";
       series3.ChartArea = "ChartArea1";
-      series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Point;
+      series3.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
       series3.Legend = "Legend1";
       series3.Name = "Series3";
       series4.ChartArea = "ChartArea1";
+      series4.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
       series4.Legend = "Legend1";
       series4.Name = "Series4";
       this.chart.Series.Add(series1);

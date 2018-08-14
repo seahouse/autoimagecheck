@@ -1662,40 +1662,107 @@ namespace WindowsFormsApplication1
         i++;
       }
 
-
-
-
-
-
-      //foreach (double zv in listY_A_Right)
-      //  listY_B_Left.Add(zv);
-
-      //listX_A_Right.Clear();
-      //listX_A_Right.Add(0.0);
-      //for (int ii = 0; ii < listX_A_Mid.Count - 1; ii++)
-      //{
-      //  listX_A_Right.Add(listX_A_Right.Last() + listX_A_Mid[ii]);
-      //}
-      //listX_B_Left.Clear();
-      //listX_B_Left.Add(0.0);
-      //for (int ii = listX_B_Mid.Count - 1; ii > 0; ii--)
-      //{
-      //  listX_B_Left.Insert(0, listX_B_Left.First() - listX_B_Mid[ii]);
-      //}
-      //foreach (double xv in listX_A_Right)
-      //  listX_B_Left.Add(xv);
+      //listX_B_Left = listX_B_Left.GetRange(35, 10);
+      //listY_B_Left = listY_B_Left.GetRange(35, 10);
 
       chart.Series[0].Points.DataBindXY(listX_B_Left, listY_B_Left);
       chart.Series[0].Name = "B301GF_CR10-LE";
 
+      List<double> listX_Offset_Big = new List<double>();
       List<double> listY_Offset_Big = new List<double>();
-      List<double> listY_Offset_Small = new List<double>();
-      for (i = 0; i < listY_B_Left.Count; i++)
-        listY_Offset_Big.Add(listY_B_Left[i] + 0.5);
-      for (i = 0; i < listY_B_Left.Count; i++)
-        listY_Offset_Small.Add(listY_B_Left[i] - 0.1);
-      chart.Series[2].Points.DataBindXY(listX_B_Left, listY_Offset_Big);
-      chart.Series[2].Name = "B301GF_CR10-LE_BIG";
+      for (i = 2; i < listX_B_Left.Count; i++)
+      {
+        double x1 = listX_B_Left[i - 2];
+        double x2 = listX_B_Left[i - 1];
+        double x3 = listX_B_Left[i];
+        double y1 = listY_B_Left[i - 2];
+        double y2 = listY_B_Left[i - 1];
+        double y3 = listY_B_Left[i];
+        double angle = Math.Atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+        double angle2 = Math.Atan2(y3 - y2, x3 - x2) * 180 / Math.PI;
+        double angle3 = (180 + angle - angle2) / 2;
+        double angle4 = (angle + angle2) / 2.0;
+        double angle5 = angle3 - 90;
+        double angle6 = angle3 + angle - 90;
+        double angle7 = 180 - angle3 - (180 - angle);
+        double d1 = 0.3 / Math.Cos(angle5);
+        double d2 = 0.1 / Math.Sin(Math.Abs(angle4 - angle));
+        //double x = x2 + d1 * Math.Cos(angle3 * Math.PI / 180);
+        //double y = y2 + d1 * Math.Sin(angle3 * Math.PI / 180);
+        //double xm = 0.3 * Math.Sin(angle6);
+        //double x = x2 + d2 * Math.Cos(angle4 * Math.PI / 180);
+        //double y = y2 + d2 * Math.Sin(angle4 * Math.PI / 180);
+        double x = x2 + 0.2 * Math.Cos(angle7 * Math.PI / 180);
+        double y = y2 + 0.2 * Math.Sin(angle7 * Math.PI / 180);
+        if (y2 == 0.0)
+          y = y2 + 0.2 * Math.Sin(-angle7 * Math.PI / 180);
+        listX_Offset_Big.Add(x);
+        listY_Offset_Big.Add(y);
+        //if (listX_Offset_Big.Count > 1)
+        //  break;
+      }
+      chart.Series[2].Points.DataBindXY(listX_Offset_Big, listY_Offset_Big);
+      chart.Series[2].Name = "MAX";
+
+      List<double> listX_Offset_Mix = new List<double>();
+      List<double> listY_Offset_Mix = new List<double>();
+      double maxY = 0.0;
+      for (i = 2; i < listX_B_Left.Count; i++)
+      {
+        double x1 = listX_B_Left[i - 2];
+        double x2 = listX_B_Left[i - 1];
+        double x3 = listX_B_Left[i];
+        double y1 = listY_B_Left[i - 2];
+        double y2 = listY_B_Left[i - 1];
+        double y3 = listY_B_Left[i];
+        double angle = Math.Atan2(y2 - y1, x2 - x1) * 180 / Math.PI;
+        double angle2 = Math.Atan2(y3 - y2, x3 - x2) * 180 / Math.PI;
+        double angle3 = (180 + angle - angle2) / 2;
+        double angle4 = (angle + angle2) / 2.0;
+        double angle5 = angle3 - 90;
+        double angle6 = angle3 + angle - 90;
+        double angle7 = 180 - angle3 - (180 - angle);
+        double d1 = 0.3 / Math.Cos(angle5);
+        double d2 = 0.1 / Math.Sin(Math.Abs(angle4 - angle));
+        //double x = x2 + d1 * Math.Cos(angle3 * Math.PI / 180);
+        //double y = y2 + d1 * Math.Sin(angle3 * Math.PI / 180);
+        //double xm = 0.3 * Math.Sin(angle6);
+        //double x = x2 + d2 * Math.Cos(angle4 * Math.PI / 180);
+        //double y = y2 + d2 * Math.Sin(angle4 * Math.PI / 180);
+        double x = x2 - 0.2 * Math.Cos(angle7 * Math.PI / 180);
+        double y = y2 - 0.2 * Math.Sin(angle7 * Math.PI / 180);
+        if (y2 == 0.0)
+        {
+          y = y2 - 0.2 * Math.Sin(-angle7 * Math.PI / 180);
+          maxY = y;
+        }
+        listX_Offset_Mix.Add(x);
+        listY_Offset_Mix.Add(y);
+        //if (listX_Offset_Big.Count > 1)
+        //  break;
+      }
+      int pos = listY_Offset_Mix.IndexOf(maxY);
+      int count = 0;
+      for (i = pos + 1; i < listY_Offset_Mix.Count; i++)
+      {
+        if (listY_Offset_Mix[i] > maxY)
+          count++;
+        else
+          break;
+      }
+      //listX_Offset_Mix.RemoveRange(pos, count);
+      //listY_Offset_Mix.RemoveRange(pos, count);
+      chart.Series[3].Points.DataBindXY(listX_Offset_Mix, listY_Offset_Mix);
+      chart.Series[3].Name = "MIX";
+
+      //List<double> listY_Offset_Big = new List<double>();
+      //List<double> listY_Offset_Small = new List<double>();
+      //for (i = 0; i < listY_B_Left.Count; i++)
+      //  listY_Offset_Big.Add(listY_B_Left[i] + 0.5);
+      //for (i = 0; i < listY_B_Left.Count; i++)
+      //  listY_Offset_Small.Add(listY_B_Left[i] - 0.1);
+      //chart.Series[2].Points.DataBindXY(listX_B_Left, listY_Offset_Big);
+      //chart.Series[2].Name = "B301GF_CR10-LE_BIG";
     }
 
     private void button3_Click(object sender, EventArgs e)
