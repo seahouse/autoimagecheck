@@ -1634,6 +1634,7 @@ namespace WindowsFormsApplication1
       List<double> listY_A_Right = new List<double>();
       double last_A = 0.0;
       double last_B = 0.0;
+      double offset = 0.2;
       while ((line = sr.ReadLine()) != null)
       {
 
@@ -1741,15 +1742,34 @@ namespace WindowsFormsApplication1
         //if (listX_Offset_Big.Count > 1)
         //  break;
       }
-      int pos = listY_Offset_Mix.IndexOf(maxY);
-      int count = 0;
-      for (i = pos + 1; i < listY_Offset_Mix.Count; i++)
+      //int pos = listY_Offset_Mix.IndexOf(maxY);
+      //int count = 0;
+      //for (i = pos + 1; i < listY_Offset_Mix.Count; i++)
+      //{
+      //  if (listY_Offset_Mix[i] > maxY)
+      //    count++;
+      //  else
+      //    break;
+      //}
+      for (i = listY_Offset_Mix.Count - 1; i >= 0; i--)
       {
-        if (listY_Offset_Mix[i] > maxY)
-          count++;
-        else
-          break;
+        double x = listX_Offset_Mix[i];
+        double y = listY_Offset_Mix[i];
+        for (int j = 0; j < listX_B_Left.Count; j++)
+        {
+          double xbase = listX_B_Left[j];
+          double ybase = listY_B_Left[j];
+
+          double d = Math.Sqrt(Math.Pow(xbase - x, 2) + Math.Pow(ybase - y, 2));
+          if (d < offset && Math.Abs(d - offset) > 0.001)
+          {
+            listX_Offset_Mix.RemoveAt(i);
+            listY_Offset_Mix.RemoveAt(i);
+            break;
+          }
+        }
       }
+
       //listX_Offset_Mix.RemoveRange(pos, count);
       //listY_Offset_Mix.RemoveRange(pos, count);
       chart.Series[3].Points.DataBindXY(listX_Offset_Mix, listY_Offset_Mix);
