@@ -43,8 +43,8 @@ namespace dengfen
 
             plist = tmp.ToArray();
 
-            initDPList();
-            computeLine(-10);
+            //initDPList();
+            //computeLine(-10);
         }
 
         private void Form1_Paint(object sender, PaintEventArgs e)
