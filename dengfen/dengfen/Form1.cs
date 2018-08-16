@@ -49,13 +49,47 @@ namespace dengfen
 
         private void Form1_Paint(object sender, PaintEventArgs e)
         {
-            var g = e.Graphics;
-            g.SmoothingMode = SmoothingMode.HighQuality;
+            //var g = e.Graphics;
+            //g.SmoothingMode = SmoothingMode.HighQuality;
 
-            g.TranslateTransform(20, 20);
-            g.DrawPolygon(new Pen(Color.Green, 2f), plist);
+            //g.TranslateTransform(20, 20);
+            //g.DrawPolygon(new Pen(Color.Green, 2f), plist);
 
-            g.DrawPolygon(new Pen(Color.Red, 2f), newList.ToArray());
+            //g.DrawPolygon(new Pen(Color.Red, 2f), newList.ToArray());
+
+
+
+            e.Graphics.TranslateTransform(200, 200);
+            e.Graphics.DrawEllipse(new Pen(Color.Black, 3), -80, -40, 160, 80);
+
+       
+
+            Matrix transformMatrix = new Matrix();
+
+            // Translate matrix, prepending translation vector.
+
+            transformMatrix.Translate(200.0F, 100.0F);
+
+            // Rotate transformation matrix of graphics object,
+
+
+            // prepending rotation matrix.
+
+            //e.Graphics.RotateTransform(30.0F);
+
+            // Multiply (prepend to) transformation matrix of
+
+
+            // graphics object to translate graphics transformation.
+
+            e.Graphics.ResetTransform();
+            e.Graphics.MultiplyTransform(transformMatrix);
+
+            // Draw rotated, translated ellipse.
+
+            e.Graphics.DrawEllipse(new Pen(Color.Blue, 3), -80, -40, 160, 80);
+
+
         }
 
         PointF[] plist; //= new[] { new PointF(0, 0), new PointF(0, 100), new PointF(100, 100), new PointF(50, 50), new PointF(100, 0) };
