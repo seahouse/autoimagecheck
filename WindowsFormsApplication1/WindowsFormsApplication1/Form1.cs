@@ -231,9 +231,9 @@ namespace WindowsFormsApplication1
                 //设置点的大小
                 chart.Series[0].MarkerSize = 5;
                 //设置曲线的颜色
-                chart.Series[0].Color = Color.Orange;
+                //chart.Series[0].Color = Color.Orange;
                 //设置曲线宽度
-                chart.Series[0].BorderWidth = 2;
+                //chart.Series[0].BorderWidth = 2;
                 //chart.Series[0].CustomProperties = "PointWidth=4";
                 //设置是否显示坐标标注
                 chart.Series[0].IsValueShownAsLabel = false;
@@ -1564,14 +1564,14 @@ namespace WindowsFormsApplication1
                 i++;
             }
 
-            listY_B_Left = listY_B_Left.Take(300).ToList<double>();
+            listY_B_Left = listY_B_Left.Take(270).ToList<double>();
             listY_B_Left.Reverse();
-            listX_B_Mid = listX_B_Mid.Take(300).ToList<double>();
+            listX_B_Mid = listX_B_Mid.Take(270).ToList<double>();
             listX_B_Mid.Reverse();
             listY_A_Right.Reverse();
-            listY_A_Right = listY_A_Right.Take(300).ToList<double>();
+            listY_A_Right = listY_A_Right.Take(270).ToList<double>();
             listX_A_Mid.Reverse();
-            listX_A_Mid = listX_A_Mid.Take(300).ToList<double>();
+            listX_A_Mid = listX_A_Mid.Take(270).ToList<double>();
 
             double maxleft = 0.0;
             if (listY_A_Right.Count > 0)
@@ -1780,14 +1780,6 @@ namespace WindowsFormsApplication1
             chart.Series[3].Points.DataBindXY(listX_Offset_Mix, listY_Offset_Mix);
             chart.Series[3].Name = "MIX";
 
-            //List<double> listY_Offset_Big = new List<double>();
-            //List<double> listY_Offset_Small = new List<double>();
-            //for (i = 0; i < listY_B_Left.Count; i++)
-            //  listY_Offset_Big.Add(listY_B_Left[i] + 0.5);
-            //for (i = 0; i < listY_B_Left.Count; i++)
-            //  listY_Offset_Small.Add(listY_B_Left[i] - 0.1);
-            //chart.Series[2].Points.DataBindXY(listX_B_Left, listY_Offset_Big);
-            //chart.Series[2].Name = "B301GF_CR10-LE_BIG";
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -1840,7 +1832,8 @@ namespace WindowsFormsApplication1
 
         private void btnCalc_Click(object sender, EventArgs e)
         {
-            double maxLength = 0.0;
+            double maxLengthOut = 0.0;
+            double maxLengthIn = 0.0;
             DataPoint p0 = null;
             DataPoint p1 = null;
 
@@ -1849,6 +1842,7 @@ namespace WindowsFormsApplication1
                 DataPoint dp0 = chart.Series[0].Points[i];
                 double x0 = dp0.XValue;
                 double y0 = dp0.YValues[0];
+                DataPoint dp_mix = null;
 
                 double mixLength = 0.0;
                 for (int j = 0; j < chart.Series[1].Points.Count; j++)
@@ -1861,27 +1855,68 @@ namespace WindowsFormsApplication1
                     if (mixLength == 0.0 || mixLength > length)
                     {
                         mixLength = length;
-                        p1 = dp1;
+                        dp_mix = dp1;
+                        //p1 = dp1;
                     }
                 }
 
-                if (maxLength == 0.0 || maxLength < mixLength)
+                if (dp_mix.XValue < 0)
                 {
-                    maxLength = mixLength;
-                    p0 = dp0;
+                    if (dp_mix.XValue > dp0.XValue)
+                    {
+                        if (maxLengthOut < mixLength)
+                        {
+                            maxLengthOut = mixLength;
+                            p0 = dp0;
+                        }
+                    }
+                    else
+                    {
+                        if (maxLengthIn < mixLength)
+                        {
+                            maxLengthIn = mixLength;
+                            p1 = dp0;
+                        }
+                    }
                 }
+                else
+                {
+                    if (dp_mix.XValue > dp0.XValue)
+                    {
+                        if (maxLengthIn < mixLength)
+                        {
+                            maxLengthIn = mixLength;
+                            p1 = dp0;
+                        }
+                    }
+                    else
+                    {
+                        if (maxLengthOut < mixLength)
+                        {
+                            maxLengthOut = mixLength;
+                            p0 = dp0;
+                        }
+                    }
+                }
+
+                //if (maxLength == 0.0 || maxLength < mixLength)
+                //{
+                //    maxLength = mixLength;
+                //    p0 = dp0;
+                //}
             }
 
             var an0 = new CalloutAnnotation();
             an0.AnchorDataPoint = p0;
-            an0.Text = maxLength.ToString();
+            an0.Text = "outmax=" + maxLengthOut.ToString("0.000");
             an0.CalloutStyle = CalloutStyle.SimpleLine;
 
             var an1 = new CalloutAnnotation();
             an1.AnchorDataPoint = p1;
-            an1.Text = maxLength.ToString("0.00");
+            an1.Text = "inmax=" + maxLengthIn.ToString("0.000");
             an1.CalloutStyle = CalloutStyle.SimpleLine;
 
+            chart.Annotations.Clear();
             chart.Annotations.Add(an0);
             chart.Annotations.Add(an1);
         }
