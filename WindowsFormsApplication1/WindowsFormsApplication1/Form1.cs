@@ -1715,8 +1715,14 @@ namespace WindowsFormsApplication1
                 //if (listX_Offset_Big.Count > 1)
                 //  break;
             }
-            chart.Series[2].Points.DataBindXY(listX_Offset_Big, listY_Offset_Big);
-            chart.Series[2].Name = "MAX";
+
+            var series = chart.Series[2];
+            series.Points.DataBindXY(listX_Offset_Big, listY_Offset_Big);
+            series.Name = "MAX";
+            series.BorderDashStyle = ChartDashStyle.Dash;
+            series.BorderWidth = 2;
+            series.Color = Color.Green;
+
 
             List<double> listX_Offset_Mix = new List<double>();
             List<double> listY_Offset_Mix = new List<double>();
@@ -1777,9 +1783,13 @@ namespace WindowsFormsApplication1
 
             //listX_Offset_Mix.RemoveRange(pos, count);
             //listY_Offset_Mix.RemoveRange(pos, count);
-            chart.Series[3].Points.DataBindXY(listX_Offset_Mix, listY_Offset_Mix);
-            chart.Series[3].Name = "MIX";
 
+            series = chart.Series[3];
+            series.Points.DataBindXY(listX_Offset_Mix, listY_Offset_Mix);
+            series.Name = "MIX";
+            series.BorderDashStyle = ChartDashStyle.Dash;
+            series.BorderWidth = 2;
+            series.Color = Color.Green;
         }
 
         private void button3_Click(object sender, EventArgs e)
