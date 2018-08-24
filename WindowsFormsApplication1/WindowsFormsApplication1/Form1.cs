@@ -263,7 +263,7 @@ namespace WindowsFormsApplication1
                 chart.ChartAreas[0].AxisY.Title = "直径";
                 chart.ChartAreas[0].AxisX.Minimum = -2.0;
                 chart.ChartAreas[0].AxisX.Maximum = 2.0;
-                chart.ChartAreas[0].AxisY.Minimum = -5.0;
+                chart.ChartAreas[0].AxisY.Minimum = -3.0;
                 chart.ChartAreas[0].AxisY.Maximum = 0.2;
                 ////设置Y轴范围  可以根据实际情况重新修改
                 //double max = listY[0];
@@ -1421,14 +1421,14 @@ namespace WindowsFormsApplication1
                 //InvokeDelegate id = new InvokeDelegate(InvokeMehtod);
                 //id.BeginInvoke(listX, listY, new AsyncCallback(), "AsycState:OK"));
 
-                listY_B_Left = listY_B_Left.Take(300).ToList<double>();
+                listY_B_Left = listY_B_Left.Take(400).ToList<double>();
                 listY_B_Left.Reverse();
-                listX_B_Mid = listX_B_Mid.Take(300).ToList<double>();
+                listX_B_Mid = listX_B_Mid.Take(400).ToList<double>();
                 listX_B_Mid.Reverse();
                 listY_A_Right.Reverse();
-                listY_A_Right = listY_A_Right.Take(300).ToList<double>();
+                listY_A_Right = listY_A_Right.Take(400).ToList<double>();
                 listX_A_Mid.Reverse();
-                listX_A_Mid = listX_A_Mid.Take(300).ToList<double>();
+                listX_A_Mid = listX_A_Mid.Take(400).ToList<double>();
 
                 double maxleft = 0.0;
                 if (listY_A_Right.Count > 0)
@@ -1487,7 +1487,7 @@ namespace WindowsFormsApplication1
 
                 IAsyncResult aResult = Form1.form1.chart.BeginInvoke(new InvokeDelegate(InvokeMehtod), new object[] { listX_B_Left, listY_B_Left });
                 //Form1.form1.chart.EndInvoke(aResult);
-
+                calc();
                 www = 0;
             }
 
@@ -1564,14 +1564,14 @@ namespace WindowsFormsApplication1
                 i++;
             }
 
-            listY_B_Left = listY_B_Left.Take(270).ToList<double>();
+            listY_B_Left = listY_B_Left.Take(250).ToList<double>();
             listY_B_Left.Reverse();
-            listX_B_Mid = listX_B_Mid.Take(270).ToList<double>();
+            listX_B_Mid = listX_B_Mid.Take(250).ToList<double>();
             listX_B_Mid.Reverse();
             listY_A_Right.Reverse();
-            listY_A_Right = listY_A_Right.Take(270).ToList<double>();
+            listY_A_Right = listY_A_Right.Take(250).ToList<double>();
             listX_A_Mid.Reverse();
-            listX_A_Mid = listX_A_Mid.Take(270).ToList<double>();
+            listX_A_Mid = listX_A_Mid.Take(250).ToList<double>();
 
             double maxleft = 0.0;
             if (listY_A_Right.Count > 0)
@@ -1720,8 +1720,8 @@ namespace WindowsFormsApplication1
             series.Points.DataBindXY(listX_Offset_Big, listY_Offset_Big);
             series.Name = "MAX";
             series.BorderDashStyle = ChartDashStyle.Dash;
-            series.BorderWidth = 2;
-            series.Color = Color.Green;
+            series.BorderWidth = 1;
+            series.Color = Color.Gray;
 
 
             List<double> listX_Offset_Mix = new List<double>();
@@ -1788,8 +1788,8 @@ namespace WindowsFormsApplication1
             series.Points.DataBindXY(listX_Offset_Mix, listY_Offset_Mix);
             series.Name = "MIX";
             series.BorderDashStyle = ChartDashStyle.Dash;
-            series.BorderWidth = 2;
-            series.Color = Color.Green;
+            series.BorderWidth = 1;
+            series.Color = Color.Gray;
         }
 
         private void button3_Click(object sender, EventArgs e)
@@ -1841,6 +1841,11 @@ namespace WindowsFormsApplication1
         }
 
         private void btnCalc_Click(object sender, EventArgs e)
+        {
+            calc();
+        }
+
+        private void calc()
         {
             double maxLengthOut = 0.0;
             double maxLengthIn = 0.0;
