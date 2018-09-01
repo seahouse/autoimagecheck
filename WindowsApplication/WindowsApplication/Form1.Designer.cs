@@ -17,7 +17,7 @@
         private void InitializeComponent()
         {
             this.components = new global::System.ComponentModel.Container();
-            global::System.ComponentModel.ComponentResourceManager componentResourceManager = new global::System.ComponentModel.ComponentResourceManager(typeof(global::激光快速测量系统.Form1));
+            global::System.ComponentModel.ComponentResourceManager resources = new global::System.ComponentModel.ComponentResourceManager(typeof(global::激光快速测量系统.Form1));
             this.btOPenfile = new global::System.Windows.Forms.Button();
             this.groupBox1 = new global::System.Windows.Forms.GroupBox();
             this.label5 = new global::System.Windows.Forms.Label();
@@ -64,7 +64,7 @@
             ((global::System.ComponentModel.ISupportInitialize)this.pictureBox1).BeginInit();
             this.groupBox3.SuspendLayout();
             base.SuspendLayout();
-            this.btOPenfile.BackgroundImage = (global::System.Drawing.Image)componentResourceManager.GetObject("btOPenfile.BackgroundImage");
+            this.btOPenfile.BackgroundImage = (global::System.Drawing.Image)resources.GetObject("btOPenfile.BackgroundImage");
             this.btOPenfile.Font = new global::System.Drawing.Font("宋体", 12f, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point, 134);
             this.btOPenfile.Location = new global::System.Drawing.Point(2319, 31);
             this.btOPenfile.Name = "btOPenfile";
@@ -74,7 +74,7 @@
             this.btOPenfile.UseVisualStyleBackColor = true;
             this.btOPenfile.Click += new global::System.EventHandler(this.btOPenfile_Click);
             this.groupBox1.BackColor = global::System.Drawing.SystemColors.ActiveCaption;
-            this.groupBox1.BackgroundImage = (global::System.Drawing.Image)componentResourceManager.GetObject("groupBox1.BackgroundImage");
+            this.groupBox1.BackgroundImage = (global::System.Drawing.Image)resources.GetObject("groupBox1.BackgroundImage");
             this.groupBox1.Controls.Add(this.label5);
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Font = new global::System.Drawing.Font("宋体", 12f, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point, 134);
@@ -99,7 +99,7 @@
             this.label4.Size = new global::System.Drawing.Size(208, 16);
             this.label4.TabIndex = 0;
             this.label4.Text = "--------  进气边  -------";
-            this.button2.BackgroundImage = (global::System.Drawing.Image)componentResourceManager.GetObject("button2.BackgroundImage");
+            this.button2.BackgroundImage = (global::System.Drawing.Image)resources.GetObject("button2.BackgroundImage");
             this.button2.Enabled = false;
             this.button2.Font = new global::System.Drawing.Font("宋体", 12f, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point, 134);
             this.button2.Location = new global::System.Drawing.Point(2242, 1289);
@@ -109,7 +109,7 @@
             this.button2.Text = "测 量";
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new global::System.EventHandler(this.button2_Click);
-            this.button3.BackgroundImage = (global::System.Drawing.Image)componentResourceManager.GetObject("button3.BackgroundImage");
+            this.button3.BackgroundImage = (global::System.Drawing.Image)resources.GetObject("button3.BackgroundImage");
             this.button3.Font = new global::System.Drawing.Font("宋体", 12f, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point, 134);
             this.button3.Location = new global::System.Drawing.Point(2338, 1289);
             this.button3.Name = "button3";
@@ -119,7 +119,7 @@
             this.button3.UseVisualStyleBackColor = true;
             this.button3.Click += new global::System.EventHandler(this.button3_Click);
             this.btnStart.AutoSize = true;
-            this.btnStart.Image = (global::System.Drawing.Image)componentResourceManager.GetObject("btnStart.Image");
+            this.btnStart.Image = (global::System.Drawing.Image)resources.GetObject("btnStart.Image");
             this.btnStart.Location = new global::System.Drawing.Point(2242, 1146);
             this.btnStart.Name = "btnStart";
             this.btnStart.Size = new global::System.Drawing.Size(55, 53);
@@ -139,7 +139,7 @@
             this.label1.Size = new global::System.Drawing.Size(76, 16);
             this.label1.TabIndex = 6;
             this.label1.Text = "测量产品";
-            this.groupBox2.BackgroundImage = (global::System.Drawing.Image)componentResourceManager.GetObject("groupBox2.BackgroundImage");
+            this.groupBox2.BackgroundImage = (global::System.Drawing.Image)resources.GetObject("groupBox2.BackgroundImage");
             this.groupBox2.Controls.Add(this.comboBox3);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.checkBoxGrid);
@@ -226,7 +226,7 @@
             this.label2.TabIndex = 2;
             this.label2.Text = "检测范围";
             this.button1.BackColor = global::System.Drawing.SystemColors.Control;
-            this.button1.BackgroundImage = (global::System.Drawing.Image)componentResourceManager.GetObject("button1.BackgroundImage");
+            this.button1.BackgroundImage = (global::System.Drawing.Image)resources.GetObject("button1.BackgroundImage");
             this.button1.Font = new global::System.Drawing.Font("宋体", 10.5f, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point, 134);
             this.button1.ForeColor = global::System.Drawing.SystemColors.ControlText;
             this.button1.Location = new global::System.Drawing.Point(1207, 23);
@@ -245,7 +245,7 @@
             this.lb_path.Size = new global::System.Drawing.Size(16, 16);
             this.lb_path.TabIndex = 10;
             this.lb_path.Text = "-";
-            this.pictureBox2.Image = (global::System.Drawing.Image)componentResourceManager.GetObject("pictureBox2.Image");
+            this.pictureBox2.Image = (global::System.Drawing.Image)resources.GetObject("pictureBox2.Image");
             this.pictureBox2.Location = new global::System.Drawing.Point(2241, 1058);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new global::System.Drawing.Size(50, 50);
@@ -286,7 +286,7 @@
             this.TimerBackgroundWorker.WorkerReportsProgress = true;
             this.TimerBackgroundWorker.DoWork += new global::System.ComponentModel.DoWorkEventHandler(this.TimerBackgroundWorker_DoWork);
             this.TimerBackgroundWorker.ProgressChanged += new global::System.ComponentModel.ProgressChangedEventHandler(this.TimerBackgroundWorker_ProgressChanged);
-            this.button4.BackgroundImage = (global::System.Drawing.Image)componentResourceManager.GetObject("button4.BackgroundImage");
+            this.button4.BackgroundImage = (global::System.Drawing.Image)resources.GetObject("button4.BackgroundImage");
             this.button4.Font = new global::System.Drawing.Font("宋体", 12f, global::System.Drawing.FontStyle.Bold, global::System.Drawing.GraphicsUnit.Point, 134);
             this.button4.Location = new global::System.Drawing.Point(2437, 1289);
             this.button4.Name = "button4";
@@ -403,7 +403,7 @@
             base.AutoScaleMode = global::System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
             this.AutoSize = true;
-            this.BackgroundImage = (global::System.Drawing.Image)componentResourceManager.GetObject("$this.BackgroundImage");
+            this.BackgroundImage = (global::System.Drawing.Image)resources.GetObject("$this.BackgroundImage");
             base.ClientSize = new global::System.Drawing.Size(1371, 750);
             base.Controls.Add(this.labelZ);
             base.Controls.Add(this.groupBox3);
@@ -427,7 +427,7 @@
             base.Controls.Add(this.btOPenfile);
             base.Controls.Add(this.pictureBox1);
             this.Font = new global::System.Drawing.Font("宋体", 9f, global::System.Drawing.FontStyle.Regular, global::System.Drawing.GraphicsUnit.Point, 134);
-            base.Icon = (global::System.Drawing.Icon)componentResourceManager.GetObject("$this.Icon");
+            base.Icon = (global::System.Drawing.Icon)resources.GetObject("$this.Icon");
             base.Name = "Form1";
             this.Text = "激光快速测量系统";
             base.Load += new global::System.EventHandler(this.Form1_Load);
