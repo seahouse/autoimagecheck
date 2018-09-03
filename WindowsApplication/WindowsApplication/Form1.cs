@@ -1,10 +1,14 @@
-﻿using System;
+﻿using iTextSharp.text;
+using iTextSharp.text.pdf;
+using LJV7_DllSampleAll;
+using MathWorks.MATLAB.NET.Arrays;
+using MatLabPeizh;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Management;
 using System.Media;
@@ -12,11 +16,6 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
-using iTextSharp.text;
-using iTextSharp.text.pdf;
-using LJV7_DllSampleAll;
-using MathWorks.MATLAB.NET.Arrays;
-using MatLabPeizh;
 
 namespace 激光快速测量系统
 {
@@ -27,12 +26,56 @@ namespace 激光快速测量系统
         public Form1()
         {
             this.InitializeComponent();
-            Size size = new Size(2560, 1440);
-            base.Size = size;
-            this.pictureBox1.Size = new Size(2180, 1300);
+            //Size size = new Size(2560, 1440);
+            //base.Size = size;
+            //this.pictureBox1.Size = new Size(2180, 1300);
             this.TimerBackgroundWorker.RunWorkerAsync();
         }
 
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            //if (!this.Copyright())
+            //{
+            //    MessageBox.Show("Please contect the developer!");
+            //    Application.Exit();
+            //    return;
+            //}
+
+            this.RefreshImage = new Bitmap(this.picChart.ClientSize.Width, this.picChart.ClientSize.Height);
+            this.boxH = this.picChart.Height;
+            this.boxW = this.picChart.Width;
+            this.Hlimit = 2.5;
+            this.m_scale = 60.0;
+            this.mcx = this.boxW / 2;
+            this.mcy = this.boxH / 10;
+            Graphics graphics = Graphics.FromHwnd(IntPtr.Zero);
+            this.Dpi = graphics.DpiX;
+            this.scale = this.m_scale / 25.4 * (double)this.Dpi * 1.2;
+            this.resultsPath = "d:\\PLFM\\RESULTS";
+            this.lb_path.Text = this.resultsPath;
+            this.PartName = "";
+            FileStream fileStream = new FileStream("init.txt", FileMode.Open);
+            StreamReader streamReader = new StreamReader(fileStream);
+            fileStream.Seek(0L, SeekOrigin.Begin);
+            for (string input = streamReader.ReadLine(); input != null; input = streamReader.ReadLine())
+            {
+                string[] array = Regex.Split(input, "\\s+");
+                global1.Xta1 = Convert.ToDouble(array[0]);
+                global1.Xoff1 = Convert.ToDouble(array[1]);
+                global1.Yoff1 = Convert.ToDouble(array[2]);
+            }
+            streamReader.Close();
+            fileStream.Close();
+        }
+
+        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                fmProcess fmProcess = new fmProcess();
+                fmProcess.ShowDialog();
+            }
+        }
 
         private void btOPenfile_Click(object sender, EventArgs e)
         {
@@ -76,7 +119,7 @@ namespace 激光快速测量系统
                             this.LeName[this.LeScnum] = text;
                         }
                     }
-                    this.tboxPart.Text = this.PartName;
+                    tboxPart.Text = this.PartName;
                 }
                 else
                 {
@@ -136,7 +179,7 @@ namespace 激光快速测量系统
                     this.labelZ.Text = "截面位置Z=" + this.Sec_z.ToString();
                     Graphics graphics = Graphics.FromImage(this.RefreshImage);
                     graphics.Clear(Color.Black);
-                    if (this.checkBoxGrid.Checked)
+                    if (this.chkGrid.Checked)
                     {
                         this.DrawGrid(graphics);
                     }
@@ -149,7 +192,7 @@ namespace 激光快速测量系统
                     {
                         this.DrawMeasure();
                     }
-                    this.pictureBox1.Refresh();
+                    this.picChart.Refresh();
                 }
             }
             for (int j = 0; j < this.LeScnum; j++)
@@ -163,7 +206,7 @@ namespace 激光快速测量系统
                     this.labelZ.Text = "截面位置Z=" + this.Sec_z.ToString();
                     Graphics graphics2 = Graphics.FromImage(this.RefreshImage);
                     graphics2.Clear(Color.Black);
-                    if (this.checkBoxGrid.Checked)
+                    if (this.chkGrid.Checked)
                     {
                         this.DrawGrid(graphics2);
                     }
@@ -176,7 +219,7 @@ namespace 激光快速测量系统
                     {
                         this.DrawMeasure();
                     }
-                    this.pictureBox1.Refresh();
+                    this.picChart.Refresh();
                 }
             }
         }
@@ -199,70 +242,35 @@ namespace 激光快速测量系统
         }
 
 
-        private void Form1_Load(object sender, EventArgs e)
+        //public void DelectDir(string srcPath)
+        //{
+        //    try
+        //    {
+        //        DirectoryInfo directoryInfo = new DirectoryInfo(srcPath);
+        //        FileSystemInfo[] fileSystemInfos = directoryInfo.GetFileSystemInfos();
+        //        foreach (FileSystemInfo fileSystemInfo in fileSystemInfos)
+        //        {
+        //            if (fileSystemInfo is DirectoryInfo)
+        //            {
+        //                DirectoryInfo directoryInfo2 = new DirectoryInfo(fileSystemInfo.FullName);
+        //                directoryInfo2.Delete(true);
+        //            }
+        //            else
+        //            {
+        //                File.Delete(fileSystemInfo.FullName);
+        //            }
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+
+        private void btnAnalyse_Click(object sender, EventArgs e)
         {
-            //if (!this.Copyright())
-            //{
-            //	MessageBox.Show("Please contect the developer!");
-            //	Application.Exit();
-            //}
-            this.RefreshImage = new Bitmap(this.pictureBox1.ClientSize.Width, this.pictureBox1.ClientSize.Height);
-            this.boxH = this.pictureBox1.Height;
-            this.boxW = this.pictureBox1.Width;
-            this.Hlimit = 2.5;
-            this.m_scale = 60.0;
-            this.mcx = this.boxW / 2;
-            this.mcy = this.boxH / 10;
-            Graphics graphics = Graphics.FromHwnd(IntPtr.Zero);
-            this.Dpi = graphics.DpiX;
-            this.scale = this.m_scale / 25.4 * (double)this.Dpi * 1.2;
-            this.resultsPath = "d:\\PLFM\\RESULTS";
-            this.lb_path.Text = this.resultsPath;
-            this.PartName = "";
-            FileStream fileStream = new FileStream("init.txt", FileMode.Open);
-            StreamReader streamReader = new StreamReader(fileStream);
-            fileStream.Seek(0L, SeekOrigin.Begin);
-            for (string input = streamReader.ReadLine(); input != null; input = streamReader.ReadLine())
-            {
-                string[] array = Regex.Split(input, "\\s+");
-                global1.Xta1 = Convert.ToDouble(array[0]);
-                global1.Xoff1 = Convert.ToDouble(array[1]);
-                global1.Yoff1 = Convert.ToDouble(array[2]);
-            }
-            streamReader.Close();
-            fileStream.Close();
-        }
-
-
-        public void DelectDir(string srcPath)
-        {
-            try
-            {
-                DirectoryInfo directoryInfo = new DirectoryInfo(srcPath);
-                FileSystemInfo[] fileSystemInfos = directoryInfo.GetFileSystemInfos();
-                foreach (FileSystemInfo fileSystemInfo in fileSystemInfos)
-                {
-                    if (fileSystemInfo is DirectoryInfo)
-                    {
-                        DirectoryInfo directoryInfo2 = new DirectoryInfo(fileSystemInfo.FullName);
-                        directoryInfo2.Delete(true);
-                    }
-                    else
-                    {
-                        File.Delete(fileSystemInfo.FullName);
-                    }
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            this.button2.Enabled = false;
+            this.btnMeasure.Enabled = false;
             this.lbStatus.Text = "正在分析数据 请等待...";
             this.Cursor = Cursors.WaitCursor;
             for (int i = 0; i < this.TeScnum; i++)
@@ -351,55 +359,55 @@ namespace 激光快速测量系统
         }
 
 
-        private void ReadProf(string prfname, double[] prfx1, double[] prfy1, double[] prfx2, double[] prfy2)
-        {
-            FileStream fileStream = new FileStream(prfname, FileMode.Open, FileAccess.Read);
-            StreamReader streamReader = new StreamReader(fileStream, Encoding.Default);
-            fileStream.Seek(0L, SeekOrigin.Begin);
-            string text = streamReader.ReadLine();
-            this.CpNum = 0;
-            while (text != null)
-            {
-                string[] array = text.Split(new char[]
-                {
-                    '\t'
-                });
-                int num = array.Length;
-                if (num > 3)
-                {
-                    this.CpNum++;
-                    prfx1[this.CpNum - 1] = (double)(-(double)Convert.ToInt32(array[0])) / 100000.0;
-                    prfx2[this.CpNum - 1] = (double)(-(double)Convert.ToInt32(array[0])) / 100000.0;
-                    prfy1[this.CpNum - 1] = (double)Convert.ToInt32(array[1]) / 100000.0;
-                    prfy2[this.CpNum - 1] = (double)Convert.ToInt32(array[2]) / 100000.0;
-                }
-                text = streamReader.ReadLine();
-            }
-            streamReader.Close();
-            fileStream.Close();
-        }
+        //private void ReadProf(string prfname, double[] prfx1, double[] prfy1, double[] prfx2, double[] prfy2)
+        //{
+        //    FileStream fileStream = new FileStream(prfname, FileMode.Open, FileAccess.Read);
+        //    StreamReader streamReader = new StreamReader(fileStream, Encoding.Default);
+        //    fileStream.Seek(0L, SeekOrigin.Begin);
+        //    string text = streamReader.ReadLine();
+        //    this.CpNum = 0;
+        //    while (text != null)
+        //    {
+        //        string[] array = text.Split(new char[]
+        //        {
+        //            '\t'
+        //        });
+        //        int num = array.Length;
+        //        if (num > 3)
+        //        {
+        //            this.CpNum++;
+        //            prfx1[this.CpNum - 1] = (double)(-(double)Convert.ToInt32(array[0])) / 100000.0;
+        //            prfx2[this.CpNum - 1] = (double)(-(double)Convert.ToInt32(array[0])) / 100000.0;
+        //            prfy1[this.CpNum - 1] = (double)Convert.ToInt32(array[1]) / 100000.0;
+        //            prfy2[this.CpNum - 1] = (double)Convert.ToInt32(array[2]) / 100000.0;
+        //        }
+        //        text = streamReader.ReadLine();
+        //    }
+        //    streamReader.Close();
+        //    fileStream.Close();
+        //}
 
 
-        private void timer1_Tick(object sender, EventArgs e)
-        {
-            this.GetScanData();
-            Graphics graphics = Graphics.FromImage(this.RefreshImage);
-            graphics.Clear(Color.Black);
-            if (this.checkBoxGrid.Checked)
-            {
-                this.DrawGrid(graphics);
-            }
-            if (this.MpNum > 0)
-            {
-                this.DrawModel(this.ddx, this.ddy);
-            }
-            this.DrawPlate();
-            if (this.CpNum > 0)
-            {
-                this.DrawMeasure();
-            }
-            this.pictureBox1.Refresh();
-        }
+        //private void timer1_Tick(object sender, EventArgs e)
+        //{
+        //    this.GetScanData();
+        //    Graphics graphics = Graphics.FromImage(this.RefreshImage);
+        //    graphics.Clear(Color.Black);
+        //    if (this.chkGrid.Checked)
+        //    {
+        //        this.DrawGrid(graphics);
+        //    }
+        //    if (this.MpNum > 0)
+        //    {
+        //        this.DrawModel(this.ddx, this.ddy);
+        //    }
+        //    this.DrawPlate();
+        //    if (this.CpNum > 0)
+        //    {
+        //        this.DrawMeasure();
+        //    }
+        //    this.picChart.Refresh();
+        //}
 
 
         private void DrawGrid(Graphics g)
@@ -547,7 +555,7 @@ namespace 激光快速测量系统
         }
 
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnMeasure_Click(object sender, EventArgs e)
         {
             if (this.btnStart.Text == "Measure")
             {
@@ -565,13 +573,13 @@ namespace 激光快速测量系统
                         this.TeRadio[j].ForeColor = Color.Yellow;
                     }
                 }
-                this.button3.Enabled = true;
+                this.btnAnalyse.Enabled = true;
                 this.lbStatus.Text = "正在采集保存数据 请等待...";
                 this.timer1.Enabled = false;
                 this.pictureBox2.Image = System.Drawing.Image.FromFile("IMG\\No.png");
                 this.btnStart.Text = "Start";
                 this.GetDataPro();
-                this.Hlimit = Convert.ToDouble(this.comboBox2.Text);
+                this.Hlimit = Convert.ToDouble(this.cboRange.Text);
                 this.abtractData(this.Hlimit);
                 DateTime.Now.ToString("yyyyMMddhhmmss");
                 this.SerNo = this.tboxSeroNo.Text;
@@ -685,7 +693,7 @@ namespace 激光快速测量系统
             this.GetDataPro();
             Graphics graphics = Graphics.FromImage(this.RefreshImage);
             graphics.Clear(Color.Black);
-            if (this.checkBoxGrid.Checked)
+            if (this.chkGrid.Checked)
             {
                 this.DrawGrid(graphics);
             }
@@ -698,7 +706,7 @@ namespace 激光快速测量系统
             {
                 this.DrawMeasure();
             }
-            this.pictureBox1.Refresh();
+            this.picChart.Refresh();
         }
 
 
@@ -1126,9 +1134,9 @@ namespace 激光快速测量系统
         }
 
 
-        private void pictureBox1_Paint(object sender, PaintEventArgs e)
+        private void picChart_Paint(object sender, PaintEventArgs e)
         {
-            this.DoubleBuffered = true;
+            DoubleBuffered = true;
             e.Graphics.DrawImage(this.RefreshImage, 0, 0);
         }
 
@@ -1141,7 +1149,7 @@ namespace 激光快速测量系统
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnSaveLocation_Click(object sender, EventArgs e)
         {
             if (this.folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
@@ -1151,13 +1159,13 @@ namespace 激光快速测量系统
         }
 
 
-        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboX_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.m_scale = Convert.ToDouble(this.comboBox3.Text);
+            this.m_scale = Convert.ToDouble(this.cboX.Text);
             this.scale = this.m_scale * (double)this.Dpi / 25.4 * 1.2;
             Graphics graphics = Graphics.FromImage(this.RefreshImage);
             graphics.Clear(Color.Black);
-            if (this.checkBoxGrid.Checked)
+            if (this.chkGrid.Checked)
             {
                 this.DrawGrid(graphics);
             }
@@ -1170,16 +1178,16 @@ namespace 激光快速测量系统
             {
                 this.DrawMeasure();
             }
-            this.pictureBox1.Refresh();
+            this.picChart.Refresh();
         }
 
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboGrid_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.GridSize = (double)Convert.ToSingle(this.comboBox1.Text);
+            this.GridSize = (double)Convert.ToSingle(this.cboGrid.Text);
             Graphics graphics = Graphics.FromImage(this.RefreshImage);
             graphics.Clear(Color.Black);
-            if (this.checkBoxGrid.Checked)
+            if (this.chkGrid.Checked)
             {
                 this.DrawGrid(graphics);
             }
@@ -1192,13 +1200,13 @@ namespace 激光快速测量系统
             {
                 this.DrawMeasure();
             }
-            this.pictureBox1.Refresh();
+            this.picChart.Refresh();
         }
 
 
-        private void checkBoxGrid_CheckedChanged(object sender, EventArgs e)
+        private void chkGrid_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.checkBoxGrid.Checked)
+            if (this.chkGrid.Checked)
             {
                 Graphics graphics = Graphics.FromImage(this.RefreshImage);
                 graphics.Clear(Color.Black);
@@ -1212,7 +1220,7 @@ namespace 激光快速测量系统
                 {
                     this.DrawMeasure();
                 }
-                this.pictureBox1.Refresh();
+                this.picChart.Refresh();
                 return;
             }
             Graphics graphics2 = Graphics.FromImage(this.RefreshImage);
@@ -1226,23 +1234,23 @@ namespace 激光快速测量系统
             {
                 this.DrawMeasure();
             }
-            this.pictureBox1.Refresh();
+            this.picChart.Refresh();
         }
 
 
-        public static byte[] ImgToByt(System.Drawing.Image img)
-        {
-            MemoryStream memoryStream = new MemoryStream();
-            img.Save(memoryStream, ImageFormat.Png);
-            return memoryStream.GetBuffer();
-        }
+        //public static byte[] ImgToByt(System.Drawing.Image img)
+        //{
+        //    MemoryStream memoryStream = new MemoryStream();
+        //    img.Save(memoryStream, ImageFormat.Png);
+        //    return memoryStream.GetBuffer();
+        //}
 
 
-        public static System.Drawing.Image BytToImg(byte[] byt)
-        {
-            MemoryStream stream = new MemoryStream(byt);
-            return System.Drawing.Image.FromStream(stream);
-        }
+        //public static System.Drawing.Image BytToImg(byte[] byt)
+        //{
+        //    MemoryStream stream = new MemoryStream(byt);
+        //    return System.Drawing.Image.FromStream(stream);
+        //}
 
 
         private void TimerBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
@@ -1264,7 +1272,7 @@ namespace 激光快速测量系统
         }
 
 
-        private void button4_Click(object sender, EventArgs e)
+        private void btnView_Click(object sender, EventArgs e)
         {
             this.lbStatus.Text = "正在启动 adobe 浏览，请等待...";
             if (this.Finishresultfile != null)
@@ -1286,20 +1294,20 @@ namespace 激光快速测量系统
         }
 
 
-        public void AddImage(string path, int Alignment, float newWidth, float newHeight, Document doc)
-        {
-            iTextSharp.text.Image instance = iTextSharp.text.Image.GetInstance(path);
-            instance.Alignment = Alignment;
-            if (newWidth != 0f)
-            {
-                instance.ScaleAbsolute(newWidth, newHeight);
-            }
-            else if (instance.Width > PageSize.A4.Width)
-            {
-                instance.ScaleAbsolute(this.rect.Width, instance.Width * instance.Height / this.rect.Height);
-            }
-            doc.Add(instance);
-        }
+        //public void AddImage(string path, int Alignment, float newWidth, float newHeight, Document doc)
+        //{
+        //    iTextSharp.text.Image instance = iTextSharp.text.Image.GetInstance(path);
+        //    instance.Alignment = Alignment;
+        //    if (newWidth != 0f)
+        //    {
+        //        instance.ScaleAbsolute(newWidth, newHeight);
+        //    }
+        //    else if (instance.Width > PageSize.A4.Width)
+        //    {
+        //        instance.ScaleAbsolute(this.rect.Width, instance.Width * instance.Height / this.rect.Height);
+        //    }
+        //    doc.Add(instance);
+        //}
 
 
         private void mergePDFFiles(string[] fileList, string outMergeFile)
@@ -1371,12 +1379,12 @@ namespace 激光快速测量系统
         }
 
 
-        private void comboBox2_SelectedIndexChanged(object sender, EventArgs e)
+        private void cboRange_SelectedIndexChanged(object sender, EventArgs e)
         {
-            this.Hlimit = Convert.ToDouble(this.comboBox2.Text);
+            this.Hlimit = Convert.ToDouble(this.cboRange.Text);
             Graphics graphics = Graphics.FromImage(this.RefreshImage);
             graphics.Clear(Color.Black);
-            if (this.checkBoxGrid.Checked)
+            if (this.chkGrid.Checked)
             {
                 this.DrawGrid(graphics);
             }
@@ -1389,14 +1397,8 @@ namespace 激光快速测量系统
             {
                 this.DrawMeasure();
             }
-            this.pictureBox1.Refresh();
+            this.picChart.Refresh();
         }
-
-
-        private void tBoxOperator_KeyPress(object sender, KeyPressEventArgs e)
-        {
-        }
-
 
         private void bW_monitor_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -1420,7 +1422,7 @@ namespace 激光快速测量系统
             this.GetScanData();
             Graphics graphics = Graphics.FromImage(this.RefreshImage);
             graphics.Clear(Color.Black);
-            if (this.checkBoxGrid.Checked)
+            if (this.chkGrid.Checked)
             {
                 this.DrawGrid(graphics);
             }
@@ -1433,24 +1435,24 @@ namespace 激光快速测量系统
             {
                 this.DrawMeasure();
             }
-            this.pictureBox1.Refresh();
+            this.picChart.Refresh();
         }
 
 
-        private void button5_Click(object sender, EventArgs e)
-        {
-            string path = "c:\\mergpdf\\";
-            string[] files = Directory.GetFiles(path);
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.Filter = "pdf文件|*.pdf|所有文件|*.*";
-            saveFileDialog.InitialDirectory = this.resultsPath;
-            saveFileDialog.RestoreDirectory = true;
-            if (saveFileDialog.ShowDialog() == DialogResult.OK)
-            {
-                this.Finishresultfile = saveFileDialog.FileName;
-                this.mergePDFFiles(files, this.Finishresultfile);
-            }
-        }
+        //private void button5_Click(object sender, EventArgs e)
+        //{
+        //    string path = "c:\\mergpdf\\";
+        //    string[] files = Directory.GetFiles(path);
+        //    SaveFileDialog saveFileDialog = new SaveFileDialog();
+        //    saveFileDialog.Filter = "pdf文件|*.pdf|所有文件|*.*";
+        //    saveFileDialog.InitialDirectory = this.resultsPath;
+        //    saveFileDialog.RestoreDirectory = true;
+        //    if (saveFileDialog.ShowDialog() == DialogResult.OK)
+        //    {
+        //        this.Finishresultfile = saveFileDialog.FileName;
+        //        this.mergePDFFiles(files, this.Finishresultfile);
+        //    }
+        //}
 
 
         private void tBuTol_KeyDown(object sender, KeyEventArgs e)
@@ -1460,7 +1462,7 @@ namespace 激光快速测量系统
                 this.uTol = Convert.ToDouble(this.tBuTol.Text);
                 Graphics graphics = Graphics.FromImage(this.RefreshImage);
                 graphics.Clear(Color.Black);
-                if (this.checkBoxGrid.Checked)
+                if (this.chkGrid.Checked)
                 {
                     this.DrawGrid(graphics);
                 }
@@ -1473,7 +1475,7 @@ namespace 激光快速测量系统
                 {
                     this.DrawMeasure();
                 }
-                this.pictureBox1.Refresh();
+                this.picChart.Refresh();
             }
         }
 
@@ -1485,7 +1487,7 @@ namespace 激光快速测量系统
                 this.dTol = Convert.ToDouble(this.tBdTol.Text);
                 Graphics graphics = Graphics.FromImage(this.RefreshImage);
                 graphics.Clear(Color.Black);
-                if (this.checkBoxGrid.Checked)
+                if (this.chkGrid.Checked)
                 {
                     this.DrawGrid(graphics);
                 }
@@ -1498,31 +1500,15 @@ namespace 激光快速测量系统
                 {
                     this.DrawMeasure();
                 }
-                this.pictureBox1.Refresh();
+                this.picChart.Refresh();
             }
         }
-
-
-        private void Form1_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.Button == MouseButtons.Right)
-            {
-                fmProcess fmProcess = new fmProcess();
-                fmProcess.ShowDialog();
-            }
-        }
-
-
-        private void tboxPart_KeyDown(object sender, KeyEventArgs e)
-        {
-        }
-
 
         private void tboxSeroNo_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Return)
             {
-                this.button2.Enabled = true;
+                this.btnMeasure.Enabled = true;
                 DateTime now = DateTime.Now;
                 this.SerNo = this.tboxSeroNo.Text;
                 string text = now.ToString("yy-MM-dd");
@@ -1628,7 +1614,7 @@ namespace 激光快速测量系统
         private string resultsPath;
 
 
-        private string resultfile;
+        //private string resultfile;
 
 
         private string Finishresultfile;
@@ -1679,10 +1665,10 @@ namespace 激光快速测量系统
         private double[] PrfY = new double[2000];
 
 
-        private double ddx;
+        private double ddx = 0;
 
 
-        private double ddy;
+        private double ddy = 0;
 
 
         private int MpNum;
@@ -1703,6 +1689,6 @@ namespace 激光快速测量系统
         private double dTol = -0.05;
 
 
-        private iTextSharp.text.Rectangle rect;
+        //private iTextSharp.text.Rectangle rect;
     }
 }
