@@ -16,6 +16,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
+using System.Linq;
 
 namespace 激光快速测量系统
 {
@@ -51,7 +52,7 @@ namespace 激光快速测量系统
             Graphics graphics = Graphics.FromHwnd(IntPtr.Zero);
             this.Dpi = graphics.DpiX;
             this.scale = this.m_scale / 25.4 * (double)this.Dpi * 1.2;
-            this.resultsPath = "d:\\PLFM\\RESULTS";
+            this.resultsPath = "c:\\PLFM\\RESULTS";
             this.lb_path.Text = this.resultsPath;
             this.PartName = "";
             FileStream fileStream = new FileStream("init.txt", FileMode.Open);
@@ -842,17 +843,17 @@ namespace 激光快速测量系统
 
         private void GetDataPro()
         {
-            int[] array = new int[1000];
-            int[] array2 = new int[1000];
-            int[] array3 = new int[1000];
-            double[] array4 = new double[1000];
-            double[] array5 = new double[1000];
-            double[] array6 = new double[1000];
-            double[] array7 = new double[1000];
-            double[] array8 = new double[1000];
-            double[] array9 = new double[1000];
-            double[] array10 = new double[1000];
-            double[] array11 = new double[1000];
+            int[] array = new int[1000];                // x
+            int[] array2 = new int[1000];               // y1
+            int[] array3 = new int[1000];               // y2
+            double[] array4 = new double[1000];         // x1: 4~-3.9
+            double[] array5 = new double[1000];         // x2: 4~-3.9
+            double[] array6 = new double[1000];         // y1
+            double[] array7 = new double[1000];         // y2
+            double[] array8 = new double[1000];         // x1: valid data
+            double[] array9 = new double[1000];         // x2: valid data
+            double[] array10 = new double[1000];        // y1: valid data
+            double[] array11 = new double[1000];        // y2: valid data
             MainForm mainForm = new MainForm();
             this.CpNum = 800;
             bool profdata = mainForm.getProfdata(array, array2, array3);
@@ -865,8 +866,8 @@ namespace 激光快速测量系统
                     array5[i] = (double)(-(double)array[i]) / 100000.0;
                     array7[i] = (double)array3[i] / 100000.0;
                 }
-                int num = 0;
-                int num2 = 0;
+                int num = 0;                // num of x1
+                int num2 = 0;               // num of x2
                 for (int i = 0; i < this.CpNum; i++)
                 {
                     if (Math.Abs(array6[i]) < 4.0)
@@ -885,9 +886,9 @@ namespace 激光快速测量系统
                         array11[num2 - 1] = array7[i];
                     }
                 }
-                double num3 = global1.Xta1;
-                double xoff = global1.Xoff1;
-                double yoff = global1.Yoff1;
+                double num3 = global1.Xta1;             // angle
+                double xoff = global1.Xoff1;            // x offset
+                double yoff = global1.Yoff1;            // y offset
                 num3 = num3 / 180.0 * 3.1415926;
                 if (num > 0 && num2 > 0)
                 {
@@ -1519,7 +1520,7 @@ namespace 激光快速测量系统
                 }
                 string text2 = string.Concat(new string[]
                 {
-                    "d:\\PLFM\\RESULTS\\",
+                    "c:\\PLFM\\RESULTS\\",
                     this.PartName,
                     "\\",
                     text,
@@ -1688,7 +1689,199 @@ namespace 激光快速测量系统
 
         private double dTol = -0.05;
 
+        private void btnTest_Click(object sender, EventArgs e)
+        {
+            this.GetTestData();
+            Graphics graphics = Graphics.FromImage(this.RefreshImage);
+            graphics.Clear(Color.Black);
+            if (this.chkGrid.Checked)
+            {
+                this.DrawGrid(graphics);
+            }
+            if (this.MpNum > 0)
+            {
+                this.DrawModel(this.ddx, this.ddy);
+            }
+            this.DrawPlate();
+            if (this.CpNum > 0)
+            {
+                this.DrawMeasure();
+            }
+            this.picChart.Refresh();
+        }
 
+        private void GetTestData()
+        {
+            int[] array = new int[1000];                // x
+            int[] array2 = new int[1000];               // y1
+            int[] array3 = new int[1000];               // y2
+            double[] array4 = new double[1000];         // x1: 4~-3.9
+            double[] array5 = new double[1000];         // x2: 4~-3.9
+            double[] array6 = new double[1000];         // y1
+            double[] array7 = new double[1000];         // y2
+            double[] array8 = new double[1000];         // x1: valid data
+            double[] array9 = new double[1000];         // x2: valid data
+            double[] array10 = new double[1000];        // y1: valid data
+            double[] array11 = new double[1000];        // y2: valid data
+            MainForm mainForm = new MainForm();
+            this.CpNum = 800;
+            StreamReader sr = new StreamReader("t2.txt", Encoding.Default);
+            String line;
+            int index = 0;
+            while ((line = sr.ReadLine()) != null)
+            {
+                String[] aa = line.Split('\t');
+                if (aa.Length > 2)
+                {                    
+                    array[index] = int.Parse( aa.ElementAt(0));
+                    array2[index] = int.Parse(aa.ElementAt(1));
+                    array3[index] = int.Parse(aa.ElementAt(2));
+                    index++;
+                }
+            }
+            //bool profdata = mainForm.getProfdata(array, array2, array3);
+            //if (profdata)
+            {
+                for (int i = 0; i < this.CpNum; i++)
+                {
+                    array4[i] = (double)(-(double)array[i]) / 100000.0;
+                    array6[i] = (double)array2[i] / 100000.0;
+                    array5[i] = (double)(-(double)array[i]) / 100000.0;
+                    array7[i] = (double)array3[i] / 100000.0;
+                }
+                int num = 0;                // num of x1
+                int num2 = 0;               // num of x2
+                for (int i = 0; i < this.CpNum; i++)
+                {
+                    if (Math.Abs(array6[i]) < 4.0)
+                    {
+                        num++;
+                        array8[num - 1] = array4[i];
+                        array10[num - 1] = array6[i];
+                    }
+                }
+                for (int i = 0; i < this.CpNum; i++)
+                {
+                    if (Math.Abs(array7[i]) < 4.0)
+                    {
+                        num2++;
+                        array9[num2 - 1] = array5[i];
+                        array11[num2 - 1] = array7[i];
+                    }
+                }
+                double num3 = global1.Xta1;             // angle
+                double xoff = global1.Xoff1;            // x offset
+                double yoff = global1.Yoff1;            // y offset
+                num3 = num3 / 180.0 * 3.1415926;
+                if (num > 0 && num2 > 0)
+                {
+                    for (int i = 0; i < num2; i++)
+                    {
+                        double num4 = array9[i];
+                        double num5 = array11[i];
+                        array9[i] = num4 * Math.Cos(num3) - num5 * Math.Sin(num3) + xoff;
+                        array11[i] = num4 * Math.Sin(num3) + num5 * Math.Cos(num3) + yoff;
+                    }
+                    int num6 = num;
+                    int num7 = 1;
+                    for (int i = 0; i < 50; i++)
+                    {
+                        int num8 = num - 1;
+                        while (num8 > num - 50 && num8 >= 1)
+                        {
+                            double num9 = array9[i];
+                            double num10 = array9[i + 1];
+                            double num11 = array11[i];
+                            double num12 = array11[i + 1];
+                            double num13 = array8[num8];
+                            double num14 = array8[num8 - 1];
+                            double num15 = array10[num8];
+                            double num16 = array10[num8 - 1];
+                            if (this.IntersectionTwoline(num9, num11, num10, num12, num13, num15, num14, num16))
+                            {
+                                double num17 = num10 - num9;
+                                double num18 = num14 - num13;
+                                double num19 = num12 - num11;
+                                double num20 = num16 - num15;
+                                double num21 = num17 * num20 - num18 * num19;
+                                Math.Sqrt(num17 * num17 + num19 * num19);
+                                if (num21 != 0.0)
+                                {
+                                    double num22 = (num17 * num20 * num13 - num18 * num19 * num9 - num18 * num17 * (num15 - num11)) / num21;
+                                    if (num17 != 0.0)
+                                    {
+                                        double num23 = (num22 - num9) * num19 / num17;
+                                        if ((num22 - num9) / num17 >= 0.0 || (num22 - num9) / num17 <= 1.0)
+                                        {
+                                            num6 = num8;
+                                            num7 = i;
+                                            break;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        double num24 = (num22 - num13) * num20 / num18;
+                                        if ((num22 - num13) / num18 >= 0.0 || (num22 - num13) / num18 <= 1.0)
+                                        {
+                                            num6 = num8;
+                                            num7 = i;
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                            num8--;
+                        }
+                    }
+                    num6--;
+                    num7++;
+                    this.CpNum = 0;
+                    for (int i = 0; i < num6; i++)
+                    {
+                        this.PrfX[this.CpNum] = array8[i];
+                        this.PrfY[this.CpNum] = array10[i];
+                        this.CpNum++;
+                    }
+                    for (int i = num7; i < num2; i++)
+                    {
+                        this.PrfX[this.CpNum] = array9[i];
+                        this.PrfY[this.CpNum] = array11[i];
+                        this.CpNum++;
+                    }
+                    this.CpNum--;
+                    num3 = -0.78539815;
+                    double num25 = -3.9;
+                    double num26;
+                    for (int i = 0; i < this.CpNum; i++)
+                    {
+                        double num4 = this.PrfX[i];
+                        double num5 = this.PrfY[i];
+                        this.PrfX[i] = num4 * Math.Cos(num3) - num5 * Math.Sin(num3);
+                        this.PrfY[i] = num4 * Math.Sin(num3) + num5 * Math.Cos(num3);
+                        if (this.PrfY[i] > num25)
+                        {
+                            num25 = this.PrfY[i];
+                            num26 = this.PrfX[i];
+                        }
+                    }
+                    num25 = -3.9;
+                    num26 = 0.0;
+                    for (int i = 0; i < this.CpNum; i++)
+                    {
+                        this.PrfX[i] = this.PrfX[i] + num26;
+                        this.PrfY[i] = this.PrfY[i] + num25;
+                    }
+                    return;
+                }
+            }
+            //else
+            //{
+            //    this.timer1.Enabled = false;
+            //    this.pictureBox2.Image = System.Drawing.Image.FromFile("IMG\\No.png");
+            //    this.btnStart.Text = "Start";
+            //    MessageBox.Show("请链接测头 usb！");
+            //}
+        }
         //private iTextSharp.text.Rectangle rect;
     }
 }
