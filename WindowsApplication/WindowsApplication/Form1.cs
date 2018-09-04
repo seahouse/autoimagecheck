@@ -23,6 +23,10 @@ namespace 激光快速测量系统
 
     public partial class Form1 : Form
     {
+        /// <summary>
+        /// B301GF_CR10-LE.txt
+        /// </summary>
+        const string NAME_REG = @"((.+)_(.+)-([TL]E))\.TXT";
 
         public Form1()
         {
@@ -54,7 +58,7 @@ namespace 激光快速测量系统
             this.scale = this.m_scale / 25.4 * (double)this.Dpi * 1.2;
             this.resultsPath = "c:\\PLFM\\RESULTS";
             this.lb_path.Text = this.resultsPath;
-            this.PartName = "";
+            tboxPart.Clear();
             FileStream fileStream = new FileStream("init.txt", FileMode.Open);
             StreamReader streamReader = new StreamReader(fileStream);
             fileStream.Seek(0L, SeekOrigin.Begin);
@@ -80,149 +84,96 @@ namespace 激光快速测量系统
 
         private void btOPenfile_Click(object sender, EventArgs e)
         {
-            if (this.folderBrowserDialog1.ShowDialog() == DialogResult.OK)
+            if (folderBrowserDialog1.ShowDialog() != DialogResult.OK) return;
+
+            mdpath = folderBrowserDialog1.SelectedPath;
+
+            flpNames.Controls.Clear();
+            radioButtons.Clear();
+            tboxPart.Clear();
+
+            DirectoryInfo directoryInfo = new DirectoryInfo(this.mdpath);
+            var files = directoryInfo.GetFiles("*.txt").OrderBy(p => p.Name).ToList();
+
+            foreach (FileInfo fileInfo in files)
             {
-                this.mdpath = this.folderBrowserDialog1.SelectedPath;
-                if (this.TeScnum > 0)
+                string name = fileInfo.Name;
+
+                var match = Regex.Match(name, NAME_REG, RegexOptions.IgnoreCase);
+                if (!match.Success || match.Groups.Count != 5)
                 {
-                    for (int i = 0; i < this.TeScnum; i++)
-                    {
-                        this.groupBox1.Controls.Remove(this.TeRadio[i]);
-                    }
+                    continue;
                 }
-                if (this.LeScnum > 0)
+
+                Category cat;
+                var result = Enum.TryParse<Category>(match.Groups[4].Value, out cat);
+                if (!result)
                 {
-                    for (int j = 0; j < this.LeScnum; j++)
-                    {
-                        this.groupBox1.Controls.Remove(this.LeRadio[j]);
-                    }
+                    continue;
                 }
-                if (Directory.GetFiles(this.mdpath).Length > 0)
+
+                tboxPart.Text = match.Groups[2].Value;
+
+                var rdb = new RadioButton { Text = match.Groups[1].Value, AutoSize = true, Tag = fileInfo };
+                rdb.Click += radioButton_Click;
+
+
+                if (!radioButtons.ContainsKey(cat)) radioButtons[cat] = new List<RadioButton>();
+                radioButtons[cat].Add(rdb);
+            }
+
+            if (radioButtons.Count == 0)
+            {
+                MessageBox.Show("所选文件夹下 没有模型文件！", Text, MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (radioButtons.ContainsKey(Category.LE))
+            {
+                flpNames.Controls.Add(new Label { Text = "--------  进气边 --------", AutoSize = true });
+                foreach (var item in radioButtons[Category.LE])
                 {
-                    DirectoryInfo directoryInfo = new DirectoryInfo(this.mdpath);
-                    this.TeScnum = 0;
-                    this.LeScnum = 0;
-                    foreach (FileInfo fileInfo in directoryInfo.GetFiles("*.txt"))
-                    {
-                        string name = fileInfo.Name;
-                        string text = name.Substring(0, name.LastIndexOf("."));
-                        int length = text.Length;
-                        string a = text.Substring(text.LastIndexOf("-") + 1, 2);
-                        this.PartName = name.Substring(0, name.IndexOf("_"));
-                        if (a == "TE")
-                        {
-                            this.TeScnum++;
-                            this.TeName[this.TeScnum] = text;
-                        }
-                        else if (a == "LE")
-                        {
-                            this.LeScnum++;
-                            this.LeName[this.LeScnum] = text;
-                        }
-                    }
-                    tboxPart.Text = this.PartName;
+                    flpNames.Controls.Add(item);
                 }
-                else
+            }
+            if (radioButtons.ContainsKey(Category.TE))
+            {
+                flpNames.Controls.Add(new Label { Text = "--------  排气边  -------", AutoSize = true });
+                foreach (var item in radioButtons[Category.TE])
                 {
-                    MessageBox.Show("所选文件夹下 没有模型文件！");
-                }
-                int num = 1;
-                if (this.LeScnum > 0)
-                {
-                    for (int l = 0; l < this.LeScnum; l++)
-                    {
-                        this.LeRadio[l] = new RadioButton();
-                        this.LeRadio[l].Width = 140;
-                        this.LeRadio[l].Left = 30;
-                        this.LeRadio[l].Height = 30;
-                        this.LeRadio[l].Top = 50 + num * this.LeRadio[l].Height;
-                        this.LeRadio[l].BackColor = Color.Transparent;
-                        this.LeRadio[l].Parent = this.groupBox1;
-                        num++;
-                        this.groupBox1.Controls.Add(this.LeRadio[l]);
-                        this.LeRadio[l].Text = this.LeName[l + 1];
-                        this.LeRadio[l].SendToBack();
-                        this.LeRadio[l].Click += this.radioButton_Click;
-                    }
-                }
-                num = 1;
-                if (this.TeScnum > 0)
-                {
-                    for (int m = 0; m < this.TeScnum; m++)
-                    {
-                        this.TeRadio[m] = new RadioButton();
-                        this.TeRadio[m].Width = 160;
-                        this.TeRadio[m].Left = 30;
-                        this.TeRadio[m].Height = 30;
-                        this.TeRadio[m].Top = 400 + num * this.TeRadio[m].Height;
-                        this.TeRadio[m].BackColor = Color.Transparent;
-                        this.TeRadio[m].Parent = this.groupBox1;
-                        num++;
-                        this.groupBox1.Controls.Add(this.TeRadio[m]);
-                        this.TeRadio[m].Text = this.TeName[m + 1];
-                        this.TeRadio[m].SendToBack();
-                        this.TeRadio[m].Click += this.radioButton_Click;
-                    }
+                    flpNames.Controls.Add(item);
                 }
             }
         }
 
         private void radioButton_Click(object sender, EventArgs e)
         {
-            for (int i = 0; i < this.TeScnum; i++)
+            var rdb = sender as RadioButton;
+            if (rdb == null || !rdb.Checked) return;
+
+            var fi = rdb.Tag as FileInfo;
+            if (fi == null) return;
+
+            this.ScName = rdb.Text.Substring(tboxPart.Text.Length + 1);
+
+            this.ReadMpfile(fi.FullName);
+            this.labelZ.Text = "截面位置Z=" + this.Sec_z.ToString();
+            Graphics graphics = Graphics.FromImage(this.RefreshImage);
+            graphics.Clear(Color.Black);
+            if (this.chkGrid.Checked)
             {
-                if (this.TeRadio[i].Checked)
-                {
-                    this.mdfile = this.mdpath + "\\" + this.TeRadio[i].Text + ".txt";
-                    int num = this.TeRadio[i].Text.IndexOf("_");
-                    this.ScName = this.TeRadio[i].Text.Substring(num + 1);
-                    this.ReadMpfile(this.mdfile);
-                    this.labelZ.Text = "截面位置Z=" + this.Sec_z.ToString();
-                    Graphics graphics = Graphics.FromImage(this.RefreshImage);
-                    graphics.Clear(Color.Black);
-                    if (this.chkGrid.Checked)
-                    {
-                        this.DrawGrid(graphics);
-                    }
-                    if (this.MpNum > 0)
-                    {
-                        this.DrawModel(this.ddx, this.ddy);
-                    }
-                    this.DrawPlate();
-                    if (this.CpNum > 0)
-                    {
-                        this.DrawMeasure();
-                    }
-                    this.picChart.Refresh();
-                }
+                this.DrawGrid(graphics);
             }
-            for (int j = 0; j < this.LeScnum; j++)
+            if (this.MpNum > 0)
             {
-                if (this.LeRadio[j].Checked)
-                {
-                    this.mdfile = this.mdpath + "\\" + this.LeRadio[j].Text + ".txt";
-                    int num2 = this.LeRadio[j].Text.IndexOf("_");
-                    this.ScName = this.LeRadio[j].Text.Substring(num2 + 1);
-                    this.ReadMpfile(this.mdfile);
-                    this.labelZ.Text = "截面位置Z=" + this.Sec_z.ToString();
-                    Graphics graphics2 = Graphics.FromImage(this.RefreshImage);
-                    graphics2.Clear(Color.Black);
-                    if (this.chkGrid.Checked)
-                    {
-                        this.DrawGrid(graphics2);
-                    }
-                    if (this.MpNum > 0)
-                    {
-                        this.DrawModel(this.ddx, this.ddy);
-                    }
-                    this.DrawPlate();
-                    if (this.CpNum > 0)
-                    {
-                        this.DrawMeasure();
-                    }
-                    this.picChart.Refresh();
-                }
+                this.DrawModel(this.ddx, this.ddy);
             }
+            this.DrawPlate();
+            if (this.CpNum > 0)
+            {
+                this.DrawMeasure();
+            }
+            this.picChart.Refresh();
         }
 
         private void DrawPlate()
@@ -274,14 +225,12 @@ namespace 激光快速测量系统
             this.btnMeasure.Enabled = false;
             this.lbStatus.Text = "正在分析数据 请等待...";
             this.Cursor = Cursors.WaitCursor;
-            for (int i = 0; i < this.TeScnum; i++)
+
+            foreach (var item in flpNames.Controls.OfType<RadioButton>())
             {
-                this.TeRadio[i].ForeColor = Color.White;
+                item.ForeColor = Color.White;
             }
-            for (int j = 0; j < this.LeScnum; j++)
-            {
-                this.LeRadio[j].ForeColor = Color.White;
-            }
+
             if (this.mdpath != "" && this.resultsPath != "")
             {
                 MWArray[] array = new MWArray[2];
@@ -311,7 +260,7 @@ namespace 激光快速测量系统
                 {
                     this.resultsPath,
                     "\\",
-                    this.PartName,
+                    tboxPart.Text,
                     "-",
                     this.SerNo,
                     "-",
@@ -560,20 +509,11 @@ namespace 激光快速测量系统
         {
             if (this.btnStart.Text == "Measure")
             {
-                for (int i = 0; i < this.LeScnum; i++)
+                foreach (var item in flpNames.Controls.OfType<RadioButton>().Where(p => p.Checked))
                 {
-                    if (this.LeRadio[i].Checked)
-                    {
-                        this.LeRadio[i].ForeColor = Color.Yellow;
-                    }
+                    item.ForeColor = Color.Yellow;
                 }
-                for (int j = 0; j < this.TeScnum; j++)
-                {
-                    if (this.TeRadio[j].Checked)
-                    {
-                        this.TeRadio[j].ForeColor = Color.Yellow;
-                    }
-                }
+
                 this.btnAnalyse.Enabled = true;
                 this.lbStatus.Text = "正在采集保存数据 请等待...";
                 this.timer1.Enabled = false;
@@ -588,7 +528,7 @@ namespace 激光快速测量系统
                 {
                     this.resultsPath,
                     "\\",
-                    this.PartName,
+                    tboxPart.Text,
                     "-",
                     this.SerNo,
                     "_",
@@ -1507,39 +1447,38 @@ namespace 激光快速测量系统
 
         private void tboxSeroNo_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Return)
+            if (e.KeyCode != Keys.Return) return;
+
+            this.btnMeasure.Enabled = true;
+            DateTime now = DateTime.Now;
+            this.SerNo = this.tboxSeroNo.Text;
+            string text = now.ToString("yy-MM-dd");
+            if (string.IsNullOrEmpty(tboxPart.Text))
             {
-                this.btnMeasure.Enabled = true;
-                DateTime now = DateTime.Now;
-                this.SerNo = this.tboxSeroNo.Text;
-                string text = now.ToString("yy-MM-dd");
-                if (this.PartName == "")
-                {
-                    MessageBox.Show("请先调取检测产品理论模型！", "提示");
-                    return;
-                }
-                string text2 = string.Concat(new string[]
-                {
+                MessageBox.Show("请先调取检测产品理论模型！", "提示");
+                return;
+            }
+            string text2 = string.Concat(new string[]
+            {
                     "c:\\PLFM\\RESULTS\\",
-                    this.PartName,
+                   tboxPart.Text,
                     "\\",
                     text,
                     "\\",
                     this.SerNo
-                });
-                this.resultsPath = text2;
-                int num = 0;
-                if (Directory.Exists(text2))
+            });
+            this.resultsPath = text2;
+            int num = 0;
+            if (Directory.Exists(text2))
+            {
+                while (Directory.Exists(this.resultsPath))
                 {
-                    while (Directory.Exists(this.resultsPath))
-                    {
-                        num++;
-                        this.resultsPath = text2 + "R" + num.ToString();
-                    }
+                    num++;
+                    this.resultsPath = text2 + "R" + num.ToString();
                 }
-                Directory.CreateDirectory(this.resultsPath);
-                this.lb_path.Text = this.resultsPath;
             }
+            Directory.CreateDirectory(this.resultsPath);
+            this.lb_path.Text = this.resultsPath;
         }
 
 
@@ -1596,20 +1535,15 @@ namespace 激光快速测量系统
 
         private int my2;
 
+        //private string PartName;
 
-        private string[] LeName = new string[20];
-
-
-        private string[] TeName = new string[20];
-
-
-        private string PartName;
+        /// <summary>
+        /// 产品目录
+        /// </summary>
+        string mdpath;
 
 
-        private string mdpath;
-
-
-        private string mdfile;
+        //private string mdfile;
 
 
         private string resultsPath;
@@ -1621,22 +1555,25 @@ namespace 激光快速测量系统
         private string Finishresultfile;
 
 
-        private int TeScnum;
-
-
-        private int LeScnum;
-
-
         private string SerNo = "";
 
 
         private string ScName = "";
 
 
-        private RadioButton[] LeRadio = new RadioButton[20];
+        enum Category
+        {
+            /// <summary>
+            /// 进气边
+            /// </summary>
+            LE,
+            /// <summary>
+            /// 排气边
+            /// </summary>
+            TE
+        }
 
-
-        private RadioButton[] TeRadio = new RadioButton[20];
+        private readonly Dictionary<Category, List<RadioButton>> radioButtons = new Dictionary<Category, List<RadioButton>>();
 
 
         private double[] MPx = new double[500];
@@ -1732,8 +1669,8 @@ namespace 激光快速测量系统
             {
                 String[] aa = line.Split('\t');
                 if (aa.Length > 2)
-                {                    
-                    array[index] = int.Parse( aa.ElementAt(0));
+                {
+                    array[index] = int.Parse(aa.ElementAt(0));
                     array2[index] = int.Parse(aa.ElementAt(1));
                     array3[index] = int.Parse(aa.ElementAt(2));
                     index++;
