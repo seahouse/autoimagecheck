@@ -34,7 +34,16 @@ namespace 激光快速测量系统
             //Size size = new Size(2560, 1440);
             //base.Size = size;
             //this.pictureBox1.Size = new Size(2180, 1300);
-            this.TimerBackgroundWorker.RunWorkerAsync();
+
+            {
+                var timer = new System.Windows.Forms.Timer { Interval = 1000 };
+
+                timer.Tick += (s, e) =>
+                {
+                    lbTime.Text = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+                };
+                timer.Start();
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -56,30 +65,22 @@ namespace 激光快速测量系统
             Graphics graphics = Graphics.FromHwnd(IntPtr.Zero);
             this.Dpi = graphics.DpiX;
             this.scale = this.m_scale / 25.4 * (double)this.Dpi * 1.2;
-            this.resultsPath = "c:\\PLFM\\RESULTS";
-            this.lb_path.Text = this.resultsPath;
+
+            lb_path.Text = Global.ResultPath;
             tboxPart.Clear();
-            FileStream fileStream = new FileStream("init.txt", FileMode.Open);
-            StreamReader streamReader = new StreamReader(fileStream);
-            fileStream.Seek(0L, SeekOrigin.Begin);
-            for (string input = streamReader.ReadLine(); input != null; input = streamReader.ReadLine())
-            {
-                string[] array = Regex.Split(input, "\\s+");
-                global1.Xta1 = Convert.ToDouble(array[0]);
-                global1.Xoff1 = Convert.ToDouble(array[1]);
-                global1.Yoff1 = Convert.ToDouble(array[2]);
-            }
-            streamReader.Close();
-            fileStream.Close();
         }
 
-        private void Form1_MouseDown(object sender, MouseEventArgs e)
+        private void Form1_MouseUp(object sender, MouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
-            {
-                fmProcess fmProcess = new fmProcess();
-                fmProcess.ShowDialog();
-            }
+            if (e.Button != MouseButtons.Right) return;
+
+            var fmProcess = new fmProcess { StartPosition = FormStartPosition.CenterScreen };
+            var ret = fmProcess.ShowDialog();
+            if (ret != DialogResult.OK) return;
+
+            Form3 form = new Form3();
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.ShowDialog();
         }
 
         private void btOPenfile_Click(object sender, EventArgs e)
@@ -231,7 +232,7 @@ namespace 激光快速测量系统
                 item.ForeColor = Color.White;
             }
 
-            if (this.mdpath != "" && this.resultsPath != "")
+            if (!string.IsNullOrEmpty(mdpath) && !string.IsNullOrEmpty(Global.ResultPath))
             {
                 MWArray[] array = new MWArray[2];
                 MWArray[] array2 = new MWArray[3];
@@ -248,31 +249,24 @@ namespace 激光快速测量系统
                 };
                 MWNumericArray mwnumericArray = new MWNumericArray(1, 4, realData);
                 array2[0] = this.mdpath;
-                array2[1] = this.resultsPath;
+                array2[1] = Global.ResultPath;
                 array2[2] = mwnumericArray;
                 string text = this.tBoxOperator.Text;
                 matLabPeizhun.peizhundll1(1, ref array, array2);
-                string path = "c:\\mergpdf\\";
-                string[] files = Directory.GetFiles(path);
+
+                string[] files = Directory.GetFiles(Global.TempPDFFolder);
                 string text2 = DateTime.Now.ToString("yyyyMMddhhmmss");
                 this.SerNo = this.tboxSeroNo.Text;
-                this.Finishresultfile = string.Concat(new string[]
-                {
-                    this.resultsPath,
-                    "\\",
-                    tboxPart.Text,
-                    "-",
-                    this.SerNo,
-                    "-",
-                    text2,
-                    ".pdf"
-                });
-                this.mergePDFFiles(files, this.Finishresultfile);
+                this.Finishresultfile = Path.Combine(Global.ResultPath,
+                    string.Format("{0}-{1}-{2}.pdf", tboxPart.Text, SerNo, text2));
+
+                this.mergePDFFiles(files, Finishresultfile);
             }
+
             this.lbStatus.Text = "正在启动 adobe 浏览，请等待...";
-            if (this.Finishresultfile != null)
+            if (!string.IsNullOrEmpty(Finishresultfile) && File.Exists(Finishresultfile))
             {
-                Process.Start("ApaReader", this.Finishresultfile);
+                Process.Start(Finishresultfile);
             }
             else if (MessageBox.Show("没有新结果 要打开以前的结果吗？", "Confirm Message", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
@@ -282,10 +276,10 @@ namespace 激光快速测量系统
                 if (openFileDialog.ShowDialog() == DialogResult.OK)
                 {
                     string fileName = openFileDialog.FileName;
-                    Process.Start("ApaReader.exe", fileName);
+                    Process.Start(fileName);
                 }
             }
-            this.lbStatus.Text = "";
+            lbStatus.Text = "";
             this.Cursor = Cursors.Arrow;
         }
 
@@ -524,17 +518,8 @@ namespace 激光快速测量系统
                 this.abtractData(this.Hlimit);
                 DateTime.Now.ToString("yyyyMMddhhmmss");
                 this.SerNo = this.tboxSeroNo.Text;
-                FileStream fileStream = new FileStream(string.Concat(new string[]
-                {
-                    this.resultsPath,
-                    "\\",
-                    tboxPart.Text,
-                    "-",
-                    this.SerNo,
-                    "_",
-                    this.ScName,
-                    ".txt"
-                }), FileMode.Create);
+                FileStream fileStream = new FileStream(
+                    Path.Combine(Global.ResultPath, string.Format("{0}-{1}-{2}.txt", tboxPart.Text, SerNo, ScName)), FileMode.Create);
                 StreamWriter streamWriter = new StreamWriter(fileStream);
                 streamWriter.WriteLine(string.Concat(new string[]
                 {
@@ -694,9 +679,9 @@ namespace 激光快速测量系统
                     array11[num2 - 1] = array7[i];
                 }
             }
-            double num3 = global1.Xta1;
-            double xoff = global1.Xoff1;
-            double yoff = global1.Yoff1;
+            double num3 = Global.Angle;
+            double xoff = Global.XOff;
+            double yoff = Global.YOff;
             if (num > 0 && num2 > 0)
             {
                 for (int i = 0; i < num2; i++)
@@ -826,9 +811,9 @@ namespace 激光快速测量系统
                         array11[num2 - 1] = array7[i];
                     }
                 }
-                double num3 = global1.Xta1;             // angle
-                double xoff = global1.Xoff1;            // x offset
-                double yoff = global1.Yoff1;            // y offset
+                double num3 = Global.Angle;             // angle
+                double xoff = Global.XOff;            // x offset
+                double yoff = Global.YOff;            // y offset
                 num3 = num3 / 180.0 * 3.1415926;
                 if (num > 0 && num2 > 0)
                 {
@@ -1095,7 +1080,7 @@ namespace 激光快速测量系统
             if (this.folderBrowserDialog1.ShowDialog() == DialogResult.OK)
             {
                 this.lb_path.Text = this.folderBrowserDialog1.SelectedPath;
-                this.resultsPath = this.folderBrowserDialog1.SelectedPath;
+                Global.ResultPath = this.folderBrowserDialog1.SelectedPath;
             }
         }
 
@@ -1192,25 +1177,6 @@ namespace 激光快速测量系统
         //    MemoryStream stream = new MemoryStream(byt);
         //    return System.Drawing.Image.FromStream(stream);
         //}
-
-
-        private void TimerBackgroundWorker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            for (;;)
-            {
-                Thread.Sleep(1000);
-                int percentProgress = 0;
-                this.TimerBackgroundWorker.ReportProgress(percentProgress);
-            }
-        }
-
-
-        private void TimerBackgroundWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            this.lbTime.Text = e.ToString();
-            string text = DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss");
-            this.lbTime.Text = text;
-        }
 
 
         private void btnView_Click(object sender, EventArgs e)
@@ -1455,30 +1421,23 @@ namespace 激光快速测量系统
             string text = now.ToString("yy-MM-dd");
             if (string.IsNullOrEmpty(tboxPart.Text))
             {
-                MessageBox.Show("请先调取检测产品理论模型！", "提示");
+                MessageBox.Show("请先调取检测产品理论模型！", "提示", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            string text2 = string.Concat(new string[]
-            {
-                    "c:\\PLFM\\RESULTS\\",
-                   tboxPart.Text,
-                    "\\",
-                    text,
-                    "\\",
-                    this.SerNo
-            });
-            this.resultsPath = text2;
+            string text2 = Path.Combine(Global.DefaultResultPath, tboxPart.Text, text, SerNo);
+
+            Global.ResultPath = text2;
             int num = 0;
             if (Directory.Exists(text2))
             {
-                while (Directory.Exists(this.resultsPath))
+                while (Directory.Exists(Global.ResultPath))
                 {
                     num++;
-                    this.resultsPath = text2 + "R" + num.ToString();
+                    Global.ResultPath = text2 + "R" + num.ToString();
                 }
             }
-            Directory.CreateDirectory(this.resultsPath);
-            this.lb_path.Text = this.resultsPath;
+            Directory.CreateDirectory(Global.ResultPath);
+            this.lb_path.Text = Global.ResultPath;
         }
 
 
@@ -1546,7 +1505,7 @@ namespace 激光快速测量系统
         //private string mdfile;
 
 
-        private string resultsPath;
+        //private string resultsPath;
 
 
         //private string resultfile;
@@ -1706,9 +1665,9 @@ namespace 激光快速测量系统
                         array11[num2 - 1] = array7[i];
                     }
                 }
-                double num3 = global1.Xta1;             // angle
-                double xoff = global1.Xoff1;            // x offset
-                double yoff = global1.Yoff1;            // y offset
+                double num3 = Global.Angle;             // angle
+                double xoff = Global.XOff;            // x offset
+                double yoff = Global.YOff;            // y offset
                 num3 = num3 / 180.0 * 3.1415926;
                 if (num > 0 && num2 > 0)
                 {

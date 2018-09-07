@@ -42,7 +42,6 @@
             this.lbTime = new System.Windows.Forms.Label();
             this.tBoxOperator = new System.Windows.Forms.TextBox();
             this.tboxPart = new System.Windows.Forms.TextBox();
-            this.TimerBackgroundWorker = new System.ComponentModel.BackgroundWorker();
             this.btnView = new System.Windows.Forms.Button();
             this.label6 = new System.Windows.Forms.Label();
             this.tboxSeroNo = new System.Windows.Forms.TextBox();
@@ -104,6 +103,7 @@
             this.flpNames.Name = "flpNames";
             this.flpNames.Size = new System.Drawing.Size(247, 179);
             this.flpNames.TabIndex = 0;
+            this.flpNames.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             // 
             // btnMeasure
             // 
@@ -260,9 +260,8 @@
             // 
             this.btnSaveLocation.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnSaveLocation.BackColor = System.Drawing.SystemColors.Control;
-            this.btnSaveLocation.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnSaveLocation.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnSaveLocation.Location = new System.Drawing.Point(492, 3);
+            this.btnSaveLocation.Location = new System.Drawing.Point(550, 3);
             this.btnSaveLocation.Name = "btnSaveLocation";
             this.btnSaveLocation.Size = new System.Drawing.Size(87, 31);
             this.btnSaveLocation.TabIndex = 9;
@@ -275,8 +274,7 @@
             this.lb_path.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lb_path.AutoSize = true;
             this.lb_path.BackColor = System.Drawing.Color.Transparent;
-            this.lb_path.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lb_path.Location = new System.Drawing.Point(585, 10);
+            this.lb_path.Location = new System.Drawing.Point(643, 10);
             this.lb_path.Name = "lb_path";
             this.lb_path.Size = new System.Drawing.Size(16, 16);
             this.lb_path.TabIndex = 10;
@@ -309,17 +307,18 @@
             this.lbTime.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lbTime.AutoSize = true;
             this.lbTime.BackColor = System.Drawing.Color.Transparent;
-            this.lbTime.Font = new System.Drawing.Font("宋体", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.lbTime.Location = new System.Drawing.Point(607, 9);
+            this.lbTime.Font = new System.Drawing.Font("Calibri", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lbTime.ForeColor = System.Drawing.Color.LimeGreen;
+            this.lbTime.Location = new System.Drawing.Point(492, 7);
             this.lbTime.Name = "lbTime";
-            this.lbTime.Size = new System.Drawing.Size(47, 19);
+            this.lbTime.Size = new System.Drawing.Size(52, 23);
             this.lbTime.TabIndex = 14;
             this.lbTime.Text = "日期";
             // 
             // tBoxOperator
             // 
-            this.tBoxOperator.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.tBoxOperator.Location = new System.Drawing.Point(51, 3);
+            this.tBoxOperator.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.tBoxOperator.Location = new System.Drawing.Point(51, 5);
             this.tBoxOperator.Name = "tBoxOperator";
             this.tBoxOperator.Size = new System.Drawing.Size(84, 26);
             this.tBoxOperator.TabIndex = 15;
@@ -327,18 +326,12 @@
             // 
             // tboxPart
             // 
-            this.tboxPart.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.tboxPart.Location = new System.Drawing.Point(223, 3);
+            this.tboxPart.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.tboxPart.Location = new System.Drawing.Point(223, 5);
             this.tboxPart.Name = "tboxPart";
             this.tboxPart.ReadOnly = true;
             this.tboxPart.Size = new System.Drawing.Size(96, 26);
             this.tboxPart.TabIndex = 16;
-            // 
-            // TimerBackgroundWorker
-            // 
-            this.TimerBackgroundWorker.WorkerReportsProgress = true;
-            this.TimerBackgroundWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.TimerBackgroundWorker_DoWork);
-            this.TimerBackgroundWorker.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.TimerBackgroundWorker_ProgressChanged);
             // 
             // btnView
             // 
@@ -365,8 +358,8 @@
             // 
             // tboxSeroNo
             // 
-            this.tboxSeroNo.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.tboxSeroNo.Location = new System.Drawing.Point(390, 3);
+            this.tboxSeroNo.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.tboxSeroNo.Location = new System.Drawing.Point(390, 5);
             this.tboxSeroNo.Name = "tboxSeroNo";
             this.tboxSeroNo.Size = new System.Drawing.Size(96, 26);
             this.tboxSeroNo.TabIndex = 20;
@@ -500,14 +493,17 @@
             this.fplTop.Controls.Add(this.tboxPart);
             this.fplTop.Controls.Add(this.label6);
             this.fplTop.Controls.Add(this.tboxSeroNo);
+            this.fplTop.Controls.Add(this.lbTime);
             this.fplTop.Controls.Add(this.btnSaveLocation);
             this.fplTop.Controls.Add(this.lb_path);
-            this.fplTop.Controls.Add(this.lbTime);
             this.fplTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.fplTop.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.fplTop.Location = new System.Drawing.Point(0, 0);
             this.fplTop.Name = "fplTop";
             this.fplTop.Size = new System.Drawing.Size(704, 37);
             this.fplTop.TabIndex = 25;
+            this.fplTop.WrapContents = false;
+            this.fplTop.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             // 
             // pnlSetting
             // 
@@ -525,6 +521,7 @@
             this.pnlSetting.Name = "pnlSetting";
             this.pnlSetting.Size = new System.Drawing.Size(253, 385);
             this.pnlSetting.TabIndex = 26;
+            this.pnlSetting.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             // 
             // btnTest
             // 
@@ -565,7 +562,6 @@
             this.Text = "激光快速测量系统";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseDown);
             this.grpNames.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
@@ -655,8 +651,6 @@
 
         private global::System.Windows.Forms.TextBox tboxPart;
 
-
-        private global::System.ComponentModel.BackgroundWorker TimerBackgroundWorker;
 
 
         private global::System.Windows.Forms.Button btnView;

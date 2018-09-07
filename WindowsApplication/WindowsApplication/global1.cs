@@ -1,62 +1,90 @@
 ﻿using System;
+using System.Configuration;
 
 namespace 激光快速测量系统
 {
+    class Global
+    {
+        static Global()
+        {
+            ResultPath = DefaultResultPath;
+        }
 
-	public class global1
-	{
+        enum CoordinateEnum
+        {
+            X_OFF, Y_OFF, ANGLE
+        }
+        public static double Angle
+        {
+            get
+            {
+                var tmp = Read(CoordinateEnum.ANGLE.ToString());
+                return Convert.ToDouble(tmp);
+            }
+            set
+            {
+                Write(CoordinateEnum.ANGLE.ToString(), value.ToString());
+            }
+        }
 
+        public static double XOff
+        {
+            get
+            {
+                var tmp = Read(CoordinateEnum.X_OFF.ToString());
+                return Convert.ToDouble(tmp);
+            }
+            set
+            {
+                Write(CoordinateEnum.X_OFF.ToString(), value.ToString());
+            }
+        }
 
+        public static double YOff
+        {
+            get
+            {
+                var tmp = Read(CoordinateEnum.Y_OFF.ToString());
+                return Convert.ToDouble(tmp);
+            }
+            set
+            {
+                Write(CoordinateEnum.Y_OFF.ToString(), value.ToString());
+            }
+        }
 
-		public static double Xta1
-		{
-			get
-			{
-				return global1.m_xta1;
-			}
-			set
-			{
-				global1.m_xta1 = value;
-			}
-		}
+        public const string DefaultResultPath = @"C:\PLFM\RESULTS";
 
+        public static string ResultPath { get; set; }
 
+        public static string TempPDFFolder
+        {
+            get
+            {
+                var tmp = Read("PDF_TMP_FOLDER");
+                return tmp;
+            }
+        }
 
-
-		public static double Xoff1
-		{
-			get
-			{
-				return global1.m_xoff1;
-			}
-			set
-			{
-				global1.m_xoff1 = value;
-			}
-		}
-
-
-
-
-		public static double Yoff1
-		{
-			get
-			{
-				return global1.m_yoff1;
-			}
-			set
-			{
-				global1.m_yoff1 = value;
-			}
-		}
-
-
-		private static double m_xta1 = 89.91;
-
-
-		private static double m_xoff1 = 0.4811;
-
-
-		private static double m_yoff1 = 0.1615;
-	}
+        static Configuration GetConfig()
+        {
+            return ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+        }
+        static string Read(string key)
+        {
+            var config = GetConfig();
+            var ret = config.AppSettings.Settings[key].Value;
+            return ret;
+        }
+        static void Write(string key, string value)
+        {
+            var config = GetConfig();
+            var tmp = config.AppSettings.Settings[key];
+            if (tmp.Value != value)
+            {
+                tmp.Value = value;
+                config.Save();
+            }
+        }
+    }
 }
