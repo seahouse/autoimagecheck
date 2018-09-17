@@ -159,22 +159,7 @@ namespace 激光快速测量系统
 
             this.ReadMpfile(fi.FullName);
             this.labelZ.Text = "截面位置Z=" + this.Sec_z.ToString();
-            Graphics graphics = Graphics.FromImage(this.RefreshImage);
-            graphics.Clear(Color.Black);
-            if (this.chkGrid.Checked)
-            {
-                this.DrawGrid(graphics);
-            }
-            if (this.MpNum > 0)
-            {
-                this.DrawModel(this.ddx, this.ddy);
-            }
-            this.DrawPlate();
-            if (this.CpNum > 0)
-            {
-                this.DrawMeasure();
-            }
-            this.picChart.Refresh();
+            UpdateIMG();
         }
 
         private void DrawPlate()
@@ -186,9 +171,9 @@ namespace 激光快速测量系统
             this.my2 = (int)((double)this.mcy + this.Hlimit * this.scale);
             Point pt = new Point(this.mx1, this.my1);
             Point pt2 = new Point(this.mx2, this.my2);
-            this.pen1.DashStyle = DashStyle.Solid;
+
             graphics.DrawLine(this.pen1, pt, pt2);
-            this.pen2.DashStyle = DashStyle.DashDot;
+
             Point pt3 = new Point(this.mcx, 0);
             Point pt4 = new Point(this.mcx, this.boxH);
             graphics.DrawLine(this.pen2, pt3, pt4);
@@ -546,7 +531,7 @@ namespace 激光快速测量系统
         private void DrawModel(double x, double y)
         {
             Graphics graphics = Graphics.FromImage(this.RefreshImage);
-            this.pen1.DashStyle = DashStyle.Solid;
+
             if (this.MpNum > 0)
             {
                 double num = 0.1;
@@ -600,7 +585,7 @@ namespace 激光快速测量系统
         private void DrawMeasure()
         {
             Graphics graphics = Graphics.FromImage(this.RefreshImage);
-            this.pen1.DashStyle = DashStyle.Solid;
+
             for (int i = 0; i < this.CpNum - 1; i++)
             {
                 int x = this.mcx + (int)((this.PrfX[i] - this.ddx) * this.scale);
@@ -617,22 +602,7 @@ namespace 激光快速测量系统
         private void timer1_Tick_1(object sender, EventArgs e)
         {
             this.GetDataPro();
-            Graphics graphics = Graphics.FromImage(this.RefreshImage);
-            graphics.Clear(Color.Black);
-            if (this.chkGrid.Checked)
-            {
-                this.DrawGrid(graphics);
-            }
-            if (this.MpNum > 0)
-            {
-                this.DrawModel(this.ddx, this.ddy);
-            }
-            this.DrawPlate();
-            if (this.CpNum > 0)
-            {
-                this.DrawMeasure();
-            }
-            this.picChart.Refresh();
+            UpdateIMG();
         }
 
 
@@ -1062,7 +1032,8 @@ namespace 激光快速测量系统
 
         private void picChart_Paint(object sender, PaintEventArgs e)
         {
-            DoubleBuffered = true;
+            //DoubleBuffered = true;
+            //e.Graphics.SmoothingMode = SmoothingMode.HighQuality;
             e.Graphics.DrawImage(this.RefreshImage, 0, 0);
         }
 
@@ -1089,78 +1060,20 @@ namespace 激光快速测量系统
         {
             this.m_scale = Convert.ToDouble(this.cboX.Text);
             this.scale = this.m_scale * (double)this.Dpi / 25.4 * 1.2;
-            Graphics graphics = Graphics.FromImage(this.RefreshImage);
-            graphics.Clear(Color.Black);
-            if (this.chkGrid.Checked)
-            {
-                this.DrawGrid(graphics);
-            }
-            if (this.MpNum > 0)
-            {
-                this.DrawModel(this.ddx, this.ddy);
-            }
-            this.DrawPlate();
-            if (this.CpNum > 0)
-            {
-                this.DrawMeasure();
-            }
-            this.picChart.Refresh();
+            UpdateIMG();
         }
 
 
         private void cboGrid_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.GridSize = (double)Convert.ToSingle(this.cboGrid.Text);
-            Graphics graphics = Graphics.FromImage(this.RefreshImage);
-            graphics.Clear(Color.Black);
-            if (this.chkGrid.Checked)
-            {
-                this.DrawGrid(graphics);
-            }
-            if (this.MpNum > 0)
-            {
-                this.DrawModel(this.ddx, this.ddy);
-            }
-            this.DrawPlate();
-            if (this.CpNum > 0)
-            {
-                this.DrawMeasure();
-            }
-            this.picChart.Refresh();
+            UpdateIMG();
         }
 
 
         private void chkGrid_CheckedChanged(object sender, EventArgs e)
         {
-            if (this.chkGrid.Checked)
-            {
-                Graphics graphics = Graphics.FromImage(this.RefreshImage);
-                graphics.Clear(Color.Black);
-                this.DrawGrid(graphics);
-                if (this.MpNum > 0)
-                {
-                    this.DrawModel(this.ddx, this.ddy);
-                }
-                this.DrawPlate();
-                if (this.CpNum > 0)
-                {
-                    this.DrawMeasure();
-                }
-                this.picChart.Refresh();
-                return;
-            }
-            Graphics graphics2 = Graphics.FromImage(this.RefreshImage);
-            graphics2.Clear(Color.Black);
-            if (this.MpNum > 0)
-            {
-                this.DrawModel(this.ddx, this.ddy);
-            }
-            this.DrawPlate();
-            if (this.CpNum > 0)
-            {
-                this.DrawMeasure();
-            }
-            this.picChart.Refresh();
+            UpdateIMG();
         }
 
 
@@ -1279,32 +1192,17 @@ namespace 激光快速测量系统
         }
 
 
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            SystemSounds.Hand.Play();
-            this.pictureBox2.Image = System.Drawing.Image.FromFile("IMG\\Pass.png");
-        }
+        //private void pictureBox2_Click(object sender, EventArgs e)
+        //{
+        //    SystemSounds.Hand.Play();
+        //    this.pictureBox2.Image = System.Drawing.Image.FromFile("IMG\\Pass.png");
+        //}
 
 
         private void cboRange_SelectedIndexChanged(object sender, EventArgs e)
         {
             this.Hlimit = Convert.ToDouble(this.cboRange.Text);
-            Graphics graphics = Graphics.FromImage(this.RefreshImage);
-            graphics.Clear(Color.Black);
-            if (this.chkGrid.Checked)
-            {
-                this.DrawGrid(graphics);
-            }
-            if (this.MpNum > 0)
-            {
-                this.DrawModel(this.ddx, this.ddy);
-            }
-            this.DrawPlate();
-            if (this.CpNum > 0)
-            {
-                this.DrawMeasure();
-            }
-            this.picChart.Refresh();
+            UpdateIMG();
         }
 
         private void bW_monitor_DoWork(object sender, DoWorkEventArgs e)
@@ -1327,22 +1225,7 @@ namespace 激光快速测量系统
         private void bW_monitor_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             this.GetScanData();
-            Graphics graphics = Graphics.FromImage(this.RefreshImage);
-            graphics.Clear(Color.Black);
-            if (this.chkGrid.Checked)
-            {
-                this.DrawGrid(graphics);
-            }
-            if (this.MpNum > 0)
-            {
-                this.DrawModel(this.ddx, this.ddy);
-            }
-            this.DrawPlate();
-            if (this.CpNum > 0)
-            {
-                this.DrawMeasure();
-            }
-            this.picChart.Refresh();
+            UpdateIMG();
         }
 
 
@@ -1364,51 +1247,19 @@ namespace 激光快速测量系统
 
         private void tBuTol_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Return)
-            {
-                this.uTol = Convert.ToDouble(this.tBuTol.Text);
-                Graphics graphics = Graphics.FromImage(this.RefreshImage);
-                graphics.Clear(Color.Black);
-                if (this.chkGrid.Checked)
-                {
-                    this.DrawGrid(graphics);
-                }
-                if (this.MpNum > 0)
-                {
-                    this.DrawModel(this.ddx, this.ddy);
-                }
-                this.DrawPlate();
-                if (this.CpNum > 0)
-                {
-                    this.DrawMeasure();
-                }
-                this.picChart.Refresh();
-            }
+            if (e.KeyCode != Keys.Return) return;
+
+            this.uTol = Convert.ToDouble(this.tBuTol.Text);
+            UpdateIMG();
         }
 
 
         private void tBdTol_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Return)
-            {
-                this.dTol = Convert.ToDouble(this.tBdTol.Text);
-                Graphics graphics = Graphics.FromImage(this.RefreshImage);
-                graphics.Clear(Color.Black);
-                if (this.chkGrid.Checked)
-                {
-                    this.DrawGrid(graphics);
-                }
-                if (this.MpNum > 0)
-                {
-                    this.DrawModel(this.ddx, this.ddy);
-                }
-                this.DrawPlate();
-                if (this.CpNum > 0)
-                {
-                    this.DrawMeasure();
-                }
-                this.picChart.Refresh();
-            }
+            if (e.KeyCode != Keys.Return) return;
+
+            this.dTol = Convert.ToDouble(this.tBdTol.Text);
+            UpdateIMG();
         }
 
         private void tboxSeroNo_KeyDown(object sender, KeyEventArgs e)
@@ -1441,19 +1292,19 @@ namespace 激光快速测量系统
         }
 
 
-        private Pen pen1 = new Pen(Color.White, 2f);
+        readonly Pen pen1 = new Pen(Color.White, 2f) { DashStyle = DashStyle.Solid };
 
 
-        private Pen pen2 = new Pen(Color.White, 1f);
+        readonly Pen pen2 = new Pen(Color.White, 1f) { DashStyle = DashStyle.DashDot };
 
 
-        private Pen pen3 = new Pen(Color.Green, 1f);
+        readonly Pen pen3 = new Pen(Color.Green, 1f);
 
 
-        private Pen pen4 = new Pen(Color.White, 1f);
+        readonly Pen pen4 = new Pen(Color.White, 1f);
 
 
-        private Pen pen5 = new Pen(Color.Red, 1f);
+        readonly Pen pen5 = new Pen(Color.Red, 1f);
 
 
         private int boxH;
@@ -1535,31 +1386,31 @@ namespace 激光快速测量系统
         private readonly Dictionary<Category, List<RadioButton>> radioButtons = new Dictionary<Category, List<RadioButton>>();
 
 
-        private double[] MPx = new double[500];
+        readonly double[] MPx = new double[500];
 
 
-        private double[] MPy = new double[500];
+        readonly double[] MPy = new double[500];
 
 
         private double GridSize = 0.4;
 
 
-        private double[] MPxU = new double[500];
+        readonly double[] MPxU = new double[500];
 
 
-        private double[] MPyU = new double[500];
+        readonly double[] MPyU = new double[500];
 
 
-        private double[] MPxD = new double[500];
+        readonly double[] MPxD = new double[500];
 
 
-        private double[] MPyD = new double[500];
+        readonly double[] MPyD = new double[500];
 
 
-        private double[] PrfX = new double[2000];
+        readonly double[] PrfX = new double[2000];
 
 
-        private double[] PrfY = new double[2000];
+        readonly double[] PrfY = new double[2000];
 
 
         private double ddx = 0;
@@ -1588,22 +1439,7 @@ namespace 激光快速测量系统
         private void btnTest_Click(object sender, EventArgs e)
         {
             this.GetTestData();
-            Graphics graphics = Graphics.FromImage(this.RefreshImage);
-            graphics.Clear(Color.Black);
-            if (this.chkGrid.Checked)
-            {
-                this.DrawGrid(graphics);
-            }
-            if (this.MpNum > 0)
-            {
-                this.DrawModel(this.ddx, this.ddy);
-            }
-            this.DrawPlate();
-            if (this.CpNum > 0)
-            {
-                this.DrawMeasure();
-            }
-            this.picChart.Refresh();
+            UpdateIMG();
         }
 
         private void GetTestData()
@@ -1782,6 +1618,11 @@ namespace 激光快速测量系统
         private void btnTest2_Click(object sender, EventArgs e)
         {
             this.GetTestData2();
+            UpdateIMG();
+        }
+
+        private void UpdateIMG()
+        {
             Graphics graphics = Graphics.FromImage(this.RefreshImage);
             graphics.Clear(Color.Black);
             if (this.chkGrid.Checked)
