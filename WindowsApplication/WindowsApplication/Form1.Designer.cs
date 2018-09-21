@@ -58,9 +58,9 @@
             this.labelZ = new System.Windows.Forms.Label();
             this.fplTop = new System.Windows.Forms.FlowLayoutPanel();
             this.pnlSetting = new System.Windows.Forms.Panel();
+            this.btnTest2 = new System.Windows.Forms.Button();
             this.btnTest = new System.Windows.Forms.Button();
             this.pnlRight = new System.Windows.Forms.Panel();
-            this.btnTest2 = new System.Windows.Forms.Button();
             this.grpNames.SuspendLayout();
             this.groupBox2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
@@ -74,7 +74,7 @@
             // btOPenfile
             // 
             this.btOPenfile.Dock = System.Windows.Forms.DockStyle.Top;
-            this.btOPenfile.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btOPenfile.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btOPenfile.Location = new System.Drawing.Point(0, 0);
             this.btOPenfile.Name = "btOPenfile";
             this.btOPenfile.Size = new System.Drawing.Size(253, 31);
@@ -87,7 +87,7 @@
             // 
             this.grpNames.Controls.Add(this.flpNames);
             this.grpNames.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.grpNames.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.grpNames.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.grpNames.Location = new System.Drawing.Point(0, 31);
             this.grpNames.Name = "grpNames";
             this.grpNames.Size = new System.Drawing.Size(253, 204);
@@ -109,7 +109,7 @@
             // btnMeasure
             // 
             this.btnMeasure.Enabled = false;
-            this.btnMeasure.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnMeasure.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnMeasure.Location = new System.Drawing.Point(3, 326);
             this.btnMeasure.Name = "btnMeasure";
             this.btnMeasure.Size = new System.Drawing.Size(71, 45);
@@ -120,7 +120,7 @@
             // 
             // btnAnalyse
             // 
-            this.btnAnalyse.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnAnalyse.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnAnalyse.Location = new System.Drawing.Point(89, 326);
             this.btnAnalyse.Name = "btnAnalyse";
             this.btnAnalyse.Size = new System.Drawing.Size(74, 45);
@@ -154,7 +154,7 @@
             this.label1.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label1.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label1.Location = new System.Drawing.Point(141, 10);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(76, 16);
@@ -169,7 +169,7 @@
             this.groupBox2.Controls.Add(this.cboRange);
             this.groupBox2.Controls.Add(this.cboGrid);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Font = new System.Drawing.Font("SimSun", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.groupBox2.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox2.Location = new System.Drawing.Point(76, 125);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(163, 151);
@@ -262,7 +262,7 @@
             this.btnSaveLocation.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnSaveLocation.BackColor = System.Drawing.SystemColors.Control;
             this.btnSaveLocation.ForeColor = System.Drawing.SystemColors.ControlText;
-            this.btnSaveLocation.Location = new System.Drawing.Point(546, 3);
+            this.btnSaveLocation.Location = new System.Drawing.Point(550, 3);
             this.btnSaveLocation.Name = "btnSaveLocation";
             this.btnSaveLocation.Size = new System.Drawing.Size(87, 31);
             this.btnSaveLocation.TabIndex = 9;
@@ -275,7 +275,7 @@
             this.lb_path.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lb_path.AutoSize = true;
             this.lb_path.BackColor = System.Drawing.Color.Transparent;
-            this.lb_path.Location = new System.Drawing.Point(639, 10);
+            this.lb_path.Location = new System.Drawing.Point(643, 10);
             this.lb_path.Name = "lb_path";
             this.lb_path.Size = new System.Drawing.Size(16, 16);
             this.lb_path.TabIndex = 10;
@@ -289,14 +289,13 @@
             this.pictureBox2.Size = new System.Drawing.Size(50, 50);
             this.pictureBox2.TabIndex = 12;
             this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
             // 
             // lbOperator
             // 
             this.lbOperator.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lbOperator.AutoSize = true;
             this.lbOperator.BackColor = System.Drawing.Color.Transparent;
-            this.lbOperator.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbOperator.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbOperator.Location = new System.Drawing.Point(3, 10);
             this.lbOperator.Name = "lbOperator";
             this.lbOperator.Size = new System.Drawing.Size(42, 16);
@@ -312,7 +311,7 @@
             this.lbTime.ForeColor = System.Drawing.Color.LimeGreen;
             this.lbTime.Location = new System.Drawing.Point(492, 7);
             this.lbTime.Name = "lbTime";
-            this.lbTime.Size = new System.Drawing.Size(48, 23);
+            this.lbTime.Size = new System.Drawing.Size(52, 23);
             this.lbTime.TabIndex = 14;
             this.lbTime.Text = "日期";
             // 
@@ -336,7 +335,7 @@
             // 
             // btnView
             // 
-            this.btnView.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnView.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnView.Location = new System.Drawing.Point(184, 326);
             this.btnView.Name = "btnView";
             this.btnView.Size = new System.Drawing.Size(67, 45);
@@ -350,7 +349,7 @@
             this.label6.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.label6.AutoSize = true;
             this.label6.BackColor = System.Drawing.Color.Transparent;
-            this.label6.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label6.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.label6.Location = new System.Drawing.Point(325, 10);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(59, 16);
@@ -371,7 +370,7 @@
             // 
             this.lbStatus.AutoSize = true;
             this.lbStatus.BackColor = System.Drawing.Color.Transparent;
-            this.lbStatus.Font = new System.Drawing.Font("SimSun", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.lbStatus.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.lbStatus.ForeColor = System.Drawing.Color.Red;
             this.lbStatus.Location = new System.Drawing.Point(12, 292);
             this.lbStatus.Name = "lbStatus";
@@ -407,7 +406,7 @@
             this.groupBox3.Controls.Add(this.tBuTol);
             this.groupBox3.Controls.Add(this.label7);
             this.groupBox3.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox3.Font = new System.Drawing.Font("SimSun", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.groupBox3.Font = new System.Drawing.Font("宋体", 10.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.groupBox3.Location = new System.Drawing.Point(0, 0);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(253, 119);
@@ -478,7 +477,7 @@
             // 
             this.labelZ.AutoSize = true;
             this.labelZ.BackColor = System.Drawing.Color.Black;
-            this.labelZ.Font = new System.Drawing.Font("SimSun", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.labelZ.Font = new System.Drawing.Font("宋体", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.labelZ.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.labelZ.Location = new System.Drawing.Point(2, 46);
             this.labelZ.Name = "labelZ";
@@ -498,7 +497,7 @@
             this.fplTop.Controls.Add(this.btnSaveLocation);
             this.fplTop.Controls.Add(this.lb_path);
             this.fplTop.Dock = System.Windows.Forms.DockStyle.Top;
-            this.fplTop.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.fplTop.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.fplTop.Location = new System.Drawing.Point(0, 0);
             this.fplTop.Name = "fplTop";
             this.fplTop.Size = new System.Drawing.Size(704, 37);
@@ -525,9 +524,20 @@
             this.pnlSetting.TabIndex = 26;
             this.pnlSetting.MouseUp += new System.Windows.Forms.MouseEventHandler(this.Form1_MouseUp);
             // 
+            // btnTest2
+            // 
+            this.btnTest2.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnTest2.Location = new System.Drawing.Point(180, 277);
+            this.btnTest2.Name = "btnTest2";
+            this.btnTest2.Size = new System.Drawing.Size(74, 45);
+            this.btnTest2.TabIndex = 25;
+            this.btnTest2.Text = " Test2";
+            this.btnTest2.UseVisualStyleBackColor = true;
+            this.btnTest2.Click += new System.EventHandler(this.btnTest2_Click);
+            // 
             // btnTest
             // 
-            this.btnTest.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.btnTest.Font = new System.Drawing.Font("宋体", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.btnTest.Location = new System.Drawing.Point(88, 277);
             this.btnTest.Name = "btnTest";
             this.btnTest.Size = new System.Drawing.Size(74, 45);
@@ -547,17 +557,6 @@
             this.pnlRight.Size = new System.Drawing.Size(253, 620);
             this.pnlRight.TabIndex = 27;
             // 
-            // btnTest2
-            // 
-            this.btnTest2.Font = new System.Drawing.Font("SimSun", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.btnTest2.Location = new System.Drawing.Point(180, 277);
-            this.btnTest2.Name = "btnTest2";
-            this.btnTest2.Size = new System.Drawing.Size(74, 45);
-            this.btnTest2.TabIndex = 25;
-            this.btnTest2.Text = " Test2";
-            this.btnTest2.UseVisualStyleBackColor = true;
-            this.btnTest2.Click += new System.EventHandler(this.btnTest2_Click);
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -569,7 +568,7 @@
             this.Controls.Add(this.picChart);
             this.Controls.Add(this.fplTop);
             this.Controls.Add(this.pnlRight);
-            this.Font = new System.Drawing.Font("SimSun", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
             this.Text = "激光快速测量系统";
