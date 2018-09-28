@@ -1696,55 +1696,55 @@ namespace 激光快速测量系统
                     }
                     int num6 = num;
                     int num7 = 1;
-                    for (int i = 0; i < 50; i++)
-                    {
-                        int num8 = num - 1;
-                        while (num8 > num - 50 && num8 >= 1)
-                        {
-                            double num9 = array9[i];
-                            double num10 = array9[i + 1];
-                            double num11 = array11[i];
-                            double num12 = array11[i + 1];
-                            double num13 = array8[num8];
-                            double num14 = array8[num8 - 1];
-                            double num15 = array10[num8];
-                            double num16 = array10[num8 - 1];
-                            if (this.IntersectionTwoline(num9, num11, num10, num12, num13, num15, num14, num16))
-                            {
-                                double num17 = num10 - num9;
-                                double num18 = num14 - num13;
-                                double num19 = num12 - num11;
-                                double num20 = num16 - num15;
-                                double num21 = num17 * num20 - num18 * num19;
-                                Math.Sqrt(num17 * num17 + num19 * num19);
-                                if (num21 != 0.0)
-                                {
-                                    double num22 = (num17 * num20 * num13 - num18 * num19 * num9 - num18 * num17 * (num15 - num11)) / num21;
-                                    if (num17 != 0.0)
-                                    {
-                                        double num23 = (num22 - num9) * num19 / num17;
-                                        if ((num22 - num9) / num17 >= 0.0 || (num22 - num9) / num17 <= 1.0)
-                                        {
-                                            num6 = num8;
-                                            num7 = i;
-                                            break;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        double num24 = (num22 - num13) * num20 / num18;
-                                        if ((num22 - num13) / num18 >= 0.0 || (num22 - num13) / num18 <= 1.0)
-                                        {
-                                            num6 = num8;
-                                            num7 = i;
-                                            break;
-                                        }
-                                    }
-                                }
-                            }
-                            num8--;
-                        }
-                    }
+                    //for (int i = 0; i < 50; i++)
+                    //{
+                    //    int num8 = num - 1;
+                    //    while (num8 > num - 50 && num8 >= 1)
+                    //    {
+                    //        double num9 = array9[i];
+                    //        double num10 = array9[i + 1];
+                    //        double num11 = array11[i];
+                    //        double num12 = array11[i + 1];
+                    //        double num13 = array8[num8];
+                    //        double num14 = array8[num8 - 1];
+                    //        double num15 = array10[num8];
+                    //        double num16 = array10[num8 - 1];
+                    //        if (this.IntersectionTwoline(num9, num11, num10, num12, num13, num15, num14, num16))
+                    //        {
+                    //            double num17 = num10 - num9;
+                    //            double num18 = num14 - num13;
+                    //            double num19 = num12 - num11;
+                    //            double num20 = num16 - num15;
+                    //            double num21 = num17 * num20 - num18 * num19;
+                    //            Math.Sqrt(num17 * num17 + num19 * num19);
+                    //            if (num21 != 0.0)
+                    //            {
+                    //                double num22 = (num17 * num20 * num13 - num18 * num19 * num9 - num18 * num17 * (num15 - num11)) / num21;
+                    //                if (num17 != 0.0)
+                    //                {
+                    //                    double num23 = (num22 - num9) * num19 / num17;
+                    //                    if ((num22 - num9) / num17 >= 0.0 || (num22 - num9) / num17 <= 1.0)
+                    //                    {
+                    //                        num6 = num8;
+                    //                        num7 = i;
+                    //                        break;
+                    //                    }
+                    //                }
+                    //                else
+                    //                {
+                    //                    double num24 = (num22 - num13) * num20 / num18;
+                    //                    if ((num22 - num13) / num18 >= 0.0 || (num22 - num13) / num18 <= 1.0)
+                    //                    {
+                    //                        num6 = num8;
+                    //                        num7 = i;
+                    //                        break;
+                    //                    }
+                    //                }
+                    //            }
+                    //        }
+                    //        num8--;
+                    //    }
+                    //}
                     num6--;
                     num7++;
                     this.CpNum = 0;
@@ -1889,41 +1889,37 @@ namespace 激光快速测量系统
                     zbase_b = zbase_b * 0.00001;
 
                     double rad = 45 / 180.0 * Math.PI;
-                    double xv = xbase * Math.Cos(rad) - zbase_b * Math.Sin(rad);
+                    double xv = xbase * Math.Cos(rad) - zbase_b * Math.Sin(rad) + xoff;
                     listX_B_Left.Add(xv);
-                    double zv = zbase_b * Math.Cos(rad) + xbase * Math.Sin(rad);
+                    double zv = zbase_b * Math.Cos(rad) + xbase * Math.Sin(rad) - yoff;
                     listY_B_Left.Add(zv);
                 }
             }
 
-            double maxright = 0.0;
-            if (listY_A_Right.Count > 0)
-                maxright = listY_A_Right.Max();
-            double maxleft = 0.0;
-            if (listY_B_Left.Count > 0)
-                maxleft = listY_B_Left.Max();
-            if (maxleft != 0.0 && maxright != 0.0)
-            {
+            //double maxright = 0.0;
+            //if (listY_A_Right.Count > 0)
+            //    maxright = listY_A_Right.Max();
+            //double maxleft = 0.0;
+            //if (listY_B_Left.Count > 0)
+            //    maxleft = listY_B_Left.Max();
+            //if (maxleft != 0.0 && maxright != 0.0)
+            //{
 
-                int pos = listY_B_Left.LastIndexOf(maxleft);
-                //listY_B_Left = listY_B_Left.Take(pos).ToList<double>();
-                //listX_B_Left = listX_B_Left.Take(pos).ToList<double>();
-                listY_B_Left = listY_B_Left.GetRange(pos, listY_B_Left.Count - pos);
-                listX_B_Left = listX_B_Left.GetRange(pos, listX_B_Left.Count - pos);
-                pos = listY_A_Right.IndexOf(maxright);
-                //listY_A_Right = listY_A_Right.GetRange(pos, listY_A_Right.Count - pos);
-                //listX_A_Right = listX_A_Right.GetRange(pos, listX_A_Right.Count - pos);
-                listY_A_Right = listY_A_Right.Take(pos).ToList<double>();
-                listX_A_Right = listX_A_Right.Take(pos).ToList<double>();
-            }
+            //    int pos = listY_B_Left.LastIndexOf(maxleft);
+            //    listY_B_Left = listY_B_Left.GetRange(pos, listY_B_Left.Count - pos);
+            //    listX_B_Left = listX_B_Left.GetRange(pos, listX_B_Left.Count - pos);
+            //    pos = listY_A_Right.IndexOf(maxright);
+            //    listY_A_Right = listY_A_Right.Take(pos).ToList<double>();
+            //    listX_A_Right = listX_A_Right.Take(pos).ToList<double>();
+            //}
 
-            double xoffset = listX_A_Right.Last() - listX_B_Left.First();
-            double yoffset = listY_A_Right.Last() - listY_B_Left.First();
-            for (int i = 0; i < listY_B_Left.Count; i++)
-            {
-                listX_B_Left[i] = listX_B_Left[i] + xoffset;
-                listY_B_Left[i] = listY_B_Left[i] + yoffset;
-            }
+            //double xoffset = listX_A_Right.Last() - listX_B_Left.First();
+            //double yoffset = listY_A_Right.Last() - listY_B_Left.First();
+            //for (int i = 0; i < listY_B_Left.Count; i++)
+            //{
+            //    listX_B_Left[i] = listX_B_Left[i] + xoffset;
+            //    listY_B_Left[i] = listY_B_Left[i] + yoffset;
+            //}
 
             this.CpNum = listY_A_Right.Count + listY_B_Left.Count;
             //this.CpNum = 645;
